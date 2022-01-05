@@ -1,0 +1,101 @@
+[
+  {
+    "id": 1,
+    "title": "9 RIDICULOUS RULES ABOUT DESIGN",
+    "excerpt": "There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour",
+    "thumb": "blog/blog-1.jpg",
+    "meta": {
+      "postDate": "Oct 18, 2019",
+      "comments": 4,
+      "author": "Admin"
+    }
+  },
+  {
+    "id": 2,
+    "title": "10 BEST PRACTICES FOR DESIGN",
+    "excerpt": "There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour",
+    "thumb": "blog/blog-2.jpg",
+    "meta": {
+      "postDate": "Oct 15, 2019",
+      "comments": 0,
+      "author": "Raju"
+    }
+  },
+  {
+    "id": 3,
+    "title": "HOW I IMPROVE DESIGN ONE EASY",
+    "excerpt": "There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour",
+    "thumb": "blog/blog-3.jpg",
+    "meta": {
+      "postDate": "Oct 9, 2019",
+      "comments": 12,
+      "author": "Author"
+    }
+  },
+  {
+    "id": 4,
+    "title": "5 WAYS TO AVOID DESIGN BURNOUT",
+    "excerpt": "There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour",
+    "thumb": "blog/blog-4.jpg",
+    "meta": {
+      "postDate": "Sep 29, 2019",
+      "comments": 6,
+      "author": "Admin"
+    }
+  },
+  {
+    "id": 5,
+    "title": "EXPERIMENT WE CAN ALL LEARN FROM",
+    "excerpt": "There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour",
+    "thumb": "blog/blog-5.jpg",
+    "meta": {
+      "postDate": "Sep 23, 2019",
+      "comments": 16,
+      "author": "Raju"
+    }
+  },
+  {
+    "id": 6,
+    "title": "CHECK OUT THIS GENIUS DESIGN PLAN",
+    "excerpt": "There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour",
+    "thumb": "blog/blog-6.jpg",
+    "meta": {
+      "postDate": "Sep 18, 2019",
+      "comments": 8,
+      "author": "HasTech"
+    }
+  },
+  {
+    "id": 7,
+    "title": "Weekend trip",
+    "excerpt": "Treat yourself to a night re-living the golden age of the railway with a stay at The Old Railway Station in Petworth, West Sussex.",
+    "thumb": "blog/blog-7.jpg",
+    "meta": {
+      "postDate": "Sep 18, 2019",
+      "comments": 8,
+      "author": "Raju"
+    }
+  },
+  {
+    "id": 8,
+    "title": "Explore Vancouver Mountain",
+    "excerpt": "Treat yourself to a night re-living the golden age of the railway with a stay at The Old Railway Station in Petworth, West Sussex.",
+    "thumb": "blog/blog-8.jpg",
+    "meta": {
+      "postDate": "Sep 18, 2019",
+      "comments": 8,
+      "author": "Arif"
+    }
+  },
+  {
+    "id": 9,
+    "title": "Discovering Paris",
+    "excerpt": "If I have a chance to whisper the best advice to a baby and he’ll remember it for the rest of his life is this: ENJOY YOUR LIFE",
+    "thumb": "blog/blog-9.jpg",
+    "meta": {
+      "postDate": "Aug 28, 2019",
+      "comments": 18,
+      "author": "Uzzal"
+    }
+  }
+]
