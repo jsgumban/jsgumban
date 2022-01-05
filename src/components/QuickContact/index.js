@@ -1,17 +1,20 @@
 import React from 'react';
 
-const QuickContact = ({phone, email, location}) => {
+const QuickContact = ({phone, email, location, linkedIn}) => {
     return (
         <div className="contact-info">
             <h3>QUICK CONTACT</h3>
             <ul>
                 <li>
-                    <span>Phone:</span>
+                    <span>Phone/WhatsApp:</span>
                     <a href={`tel:${phone}`}>{phone}</a>
                 </li>
                 <li>
                     <span>Email:</span>
                     <a href={`mailto:${email}`}>{email}</a>
+                </li>
+                <li>
+                    <span>LinkedIn:</span>{linkedIn}
                 </li>
                 <li>
                     <span>Location:</span>{location}

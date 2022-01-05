@@ -22,9 +22,10 @@ const Contact = () => {
 
                                 <Col lg={10}>
                                     <QuickContact
-                                        phone={'+012456879'}
-                                        email={'hello@example.com'}
-                                        location={'2020 Willshire Glen, Alpharetta, GA-30009'}
+                                        phone={'+639770985827'}
+                                        email={'gumban.johnhel@gmail.com'}
+                                        location={'Davao City, Philippines'}
+                                        linkedIn={'https://www.linkedin.com/in/jsgumban/'}
                                     />
                                 </Col>
                             </Row>
@@ -32,9 +33,9 @@ const Contact = () => {
 
                         <Col lg={6}>
                             <Map
-                                text={'There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour lebmid'}
-                                lat={40.6971494}
-                                long={-74.2598661}
+                                text={'Davao City, on the southern Philippine island of Mindanao, is a coastal commercial center near 2,954m-high Mount Apo, the country’s highest peak. It\'s also home to Durian Dome, named after the pungent, spiky fruit that grows in abundance on Mindanao. The Davao River cuts through the city.'}
+                                lat={7.1907}
+                                long={125.4553}
                             />
                         </Col>
                     </Row>
