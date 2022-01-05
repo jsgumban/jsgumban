@@ -1,27 +1,55 @@
 [
   {
     "id": 1,
-    "title": "EXPERTCOLLEGE (AUG 2020 - PRESENT)",
-    "content": "There are many variations of passages of Ipsum available, but the majority have suffered alteration in some form, variations of passages of Ipsum available but the majority have suffered"
+    "title": "EXPERTCOLLEGE",
+    "position": "Front-end Developer - Fulltime (Aug 2020 - Present)",
+    "contents": [
+      "Participated in code reviews",
+      "Developed web applications using Angular framework",
+      "Collaborated with teams in system planning and analysis"
+    ]
   },
   {
     "id": 2,
-    "title": "REALTYVIEW.INC (MAR 2021 - JUL 2021)",
-    "content": "There are many variations of passages of Ipsum available, but the majority have suffered alteration in some form, variations of passages of Ipsum available but the majority have suffered"
+    "title": "REALTYVIEW.INC",
+    "position": "Back-end Developer - Project-based (Mar 2021 - Jul 2021)",
+    "contents": [
+      "Developed RESTful APIs using Node.js",
+      "Implemented integration and unit testing using Jest.js",
+      "Designed data models in MySQL using Sequelize ORM framework",
+      "Maintain the central database to ensure high performance and request responsiveness",
+      "Worked closely with front-end team members to understand the data and requirements needed"
+    ]
   },
   {
     "id": 3,
-    "title": "APPETISER APPS (FEB 2019 - AUG 2020)",
-    "content": "There are many variations of passages of Ipsum available, but the majority have suffered alteration in some form, variations of passages of Ipsum available but the majority have suffered"
+    "title": "APPETISER APPS",
+    "position": "Front-end Developer - Fulltime (Feb 2019 - Aug 2020)",
+    "contents": [
+      "Participated in code reviews",
+      "Developed different web applications using Vue.js",
+      "Architected and implemented RESTful APIs and microservices using Laravel framework, connecting to MySQL as its database"
+    ]
   },
   {
     "id": 4,
-    "title": "SKYLINE DYNAMICS (APR 2020 - JUL 2019)",
-    "content": "There are many variations of passages of Ipsum available, but the majority have suffered alteration in some form, variations of passages of Ipsum available but the majority have suffered"
+    "title": "SKYLINE DYNAMICS",
+    "position": "Front-end Developer - Project-based (Apr 2020 - Jul 2019)",
+    "contents": [
+      "Collaborated with teams in system planning and analysis",
+      "Developed a web booking application system for King Khalid International Airport using Angular framework"
+    ]
   },
   {
     "id": 5,
-    "title": "SATOSHI CITADEL INDUSTRIES (SEPT 2016 - SEPT 2018)",
-    "content": "There are many variations of passages of Ipsum available, but the majority have suffered alteration in some form, variations of passages of Ipsum available but the majority have suffered"
+    "title": "SATOSHI CITADEL INDUSTRIES",
+    "position": "Front-end Developer - Fulltime (Sept 2016 - Sept 2018)",
+    "contents": [
+      "Participated in code reviews",
+      "Implemented integration and unit testing using Mocha.js",
+      "Developed front-end web applications using React.js/Redux",
+      "Team lead for developing Citadax (cryptocurrency trading platform)",
+      "Architected and implemented RESTful APIs and microservices using Node.js, connecting to Postgresql as its database"
+    ]
   }
 ]

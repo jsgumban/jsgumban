@@ -13,18 +13,19 @@ const PersonalPortfolioService = () => {
                     <Row>
                         <Col>
                             <SectionTitle
-                                title={"WORK EXPERIENCES"}
-                                content={"I am a graduate of Bachelor of Science in Computer Science at University of the Philippines in 2016."}
+                                title={"RELEVANT WORK EXPERIENCES"}
+                                content={"I am a graduate of Bachelor of Science in Computer Science at the University of the Philippines in 2016."}
                             />
                         </Col>
                     </Row>
 
                     <Row>
                         {services.map(service => (
-                            <Col key={service.id} md={6} className={'mb-40 mb-xs-30'}>
+                            <Col key={service.id} md={12} className={'mb-40 mb-xs-30'}>
                                 <Service
                                     title={service.title}
-                                    content={service.content}
+                                    position={service.position}
+                                    contents={service.contents}
                                 />
                             </Col>
                         ))}
