@@ -1,6 +1,6 @@
 import React from 'react';
 import {Container, Row, Col} from 'react-bootstrap';
-import serviceBg from '../../assets/images/bg/service-bg.png';
+import serviceBg from '../../assets/images/bg/blog-hero.png';
 import SectionTitle from "../../components/SectionTitle";
 import Service from "../../components/service";
 import services from '../../data/service'
@@ -13,8 +13,8 @@ const PersonalPortfolioService = () => {
                     <Row>
                         <Col>
                             <SectionTitle
-                                title={"My Services"}
-                                content={"Lorem ipsum, dolor sit amet consectetur adipisicing elit. Nulla, aliquam."}
+                                title={"WORK EXPERIENCES"}
+                                content={"I am a graduate of Bachelor of Science in Computer Science at University of the Philippines in 2016."}
                             />
                         </Col>
                     </Row>

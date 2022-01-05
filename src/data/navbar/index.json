@@ -3,7 +3,8 @@
     "id": 1,
     "title": "Home",
     "link": "/",
-    "megaMenu": false,
+    "megaMenu": true,
+    "show": false,
     "subMenu": [
       {
         "id": 1.1,
@@ -208,6 +209,7 @@
   {
     "id": 6,
     "title": "Contact",
-    "link": "/contact"
+    "link": "/contact",
+    "show": false
   }
 ]
