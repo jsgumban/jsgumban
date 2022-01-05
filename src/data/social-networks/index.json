@@ -2,21 +2,21 @@
   {
     "id": 1,
     "media": "linkedin",
-    "url": "https://linkedin.com/company/hasthemes"
+    "url": "https://linkedin.com/in/jsgumban"
   },
   {
     "id": 2,
-    "media": "facebook",
-    "url": "https://facebook.com/hasthemes"
+    "media": "github",
+    "url": "https://github.com/jsgumban"
   },
   {
     "id": 3,
     "media": "twitter",
-    "url": "https://twitter.com/hasthemes"
+    "url": "https://twitter.com/jsgumban"
   },
   {
     "id": 4,
-    "media": "dribbble",
-    "url": "https://dribbble.com/hasthemes"
+    "media": "instagram",
+    "url": "https://instagram.com/jsgumban"
   }
 ]

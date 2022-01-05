@@ -6,7 +6,7 @@ const FooterOne = ({next, prev}) => {
             <div className="container-fluid">
                 <div className="row align-items-center">
                     <div className="footer-copyright col-lg-4 col-12 order-lg-1 order-3">
-                        <p>&copy; {new Date().getFullYear()} MINIMAU. ALL RIGHT RESERVED</p>
+                        <p>&copy; {new Date().getFullYear()} jsgumban.com. ALL RIGHT RESERVED</p>
                     </div>
 
                     <div className="col-lg-4 col-12 order-lg-2 order-1 mb-sm-15 mb-xs-15">
