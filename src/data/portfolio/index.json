@@ -1,318 +1,195 @@
 [
   {
     "id": 1,
-    "title": "Oil Paint Dog",
-    "category": "Design",
-    "thumb": "portfolio-1.jpg",
-    "description": "The majority have suffered alteration in some form, by injected humour lebmid. There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour lebmid. There are many variations of passages of Lorem Ipsum available.",
+    "title": "Bitbit.cash",
+    "category": "Full-stack Developer",
+    "thumb": "bitbit.jpg",
+    "description": "Bitbit is a free digital money wallet app for your smartphone that lets you carry cash or bitcoin, send and receive money, and more. Available on iOS and Android, anyone can start using SCI’s services in one easy to use app.",
     "previewImages": [
-      "portfolio-1.jpg",
-      "portfolio-2.jpg"
+      "bitbit.jpg",
+      "bitbit-2.jpg"
     ],
     "meta": {
-      "client": "Jerry Wilson",
-      "date": "01/05/2020",
-      "website": "https://hasthemes.com",
+      "client": "Satoshi Citadel Industries",
+      "date": "Sept 2016 – Sept 2018",
+      "website": "https://www.bitbit.cash/",
       "services": [
-        "Design",
-        "Branding",
-        "Web",
-        "Photography"
+        "Web development",
+        "Front-end",
+        "Back-end",
+        "Full-stack"
+      ],
+      "techStacks": [
+        "React.js",
+        "Redux.js",
+        "Bootstrap UI",
+        "Node.js",
+        "Express.js",
+        "Mocha.js",
+        "Postgresql"
       ]
     }
   },
   {
     "id": 2,
-    "title": "Hardcover Book Cover",
-    "category": "Photography",
-    "thumb": "portfolio-2.jpg",
-    "description": "There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour lebmid. There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour lebmid",
+    "title": "Buybitcoin.ph",
+    "category": "Full-stack Developer",
+    "thumb": "buybtc.jpg",
+    "description": "The Philippine’s first Bitcoin exchange - Buy and Sell bitcoins, fast and easy.",
     "previewImages": [
-      "portfolio-2.jpg",
-      "portfolio-2.jpg"
+      "buybtc.jpg",
+      "buybtc-2.jpg"
     ],
     "meta": {
-      "client": "Raju Wilson",
-      "date": "01/05/2021",
-      "website": "https://hasthemes.com",
+      "client": "Satoshi Citadel Industries",
+      "date": "Sept 2016 – Sept 2018",
+      "website": "https://www.buybitcoin.ph/",
       "services": [
-        "Design",
-        "Branding",
-        "Web",
-        "Photography"
+        "Web development",
+        "Front-end",
+        "Back-end",
+        "Full-stack"
+      ],
+      "techStacks": [
+        "React.js",
+        "Bootstrap UI",
+        "Redux.js",
+        "Node.js",
+        "Express.js",
+        "Mocha.js",
+        "Postgresql"
       ]
     }
   },
   {
     "id": 3,
-    "title": "Flying Macbook",
-    "category": "Markup",
-    "thumb": "portfolio-3.jpg",
-    "description": "The majority have suffered alteration in some form, by injected humour lebmid. There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour lebmid. There are many variations of passages of Lorem Ipsum available.",
+    "title": "Citadax",
+    "category": "Full-stack Developer",
+    "thumb": "citadax.jpg",
+    "description": "A liquidity platform component focused on cryptocurrency trading in Southeast Asia with a very secure, user-friendly and stable exchange at the center.",
     "previewImages": [
-      "portfolio-3.jpg",
-      "portfolio-2.jpg"
+      "citadax.jpg",
+      "citadax-2.jpg"
     ],
     "meta": {
-      "client": "Jerry Wilson",
-      "date": "21/05/2021",
-      "website": "https://hasthemes.com",
+      "client": "Satoshi Citadel Industries",
+      "date": "Sept 2016 – Sept 2018",
+      "website": "https://www.citadax.com/",
       "services": [
-        "Design",
-        "Web",
-        "Photography"
+        "Web development",
+        "Front-end",
+        "Back-end",
+        "Full-stack"
+      ],
+      "techStacks": [
+        "React.js",
+        "Redux.js",
+        "Express.js",
+        "Bootstrap UI"
       ]
     }
   },
   {
     "id": 4,
-    "title": "Floating Card",
-    "category": "Design",
-    "thumb": "portfolio-4.jpg",
-    "description": "The majority have suffered alteration in some form, by injected humour lebmid. There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour lebmid. There are many variations of passages of Lorem Ipsum available.",
+    "title": "Mazaya",
+    "category": "Front-end Developer",
+    "thumb": "mazaya.jpg",
+    "description": "“Mazaya” program, from “Riyadh Airports”, offers a diverse package of services to passengers travelling through King Khalid International Airport, which will greatly enhance the leisure and comfort of your travelling experience. These specialized services have been carefully designed to maximize the joy of travelling for your entire journey, from the moment you leave your home, until you return.\u2028With “Mazaya” program, you can enjoy integrated care for you and your family through a variety of options; starting from the “Mazaya” annual membership to selected services, depending on your needs.",
     "previewImages": [
-      "portfolio-4.jpg",
-      "portfolio-2.jpg",
-      "portfolio-3.jpg"
+      "mazaya.jpg",
+      "mazaya-2.jpg"
     ],
     "meta": {
-      "client": "Jowel Jerry",
-      "date": "01/05/2021",
-      "website": "https://hasthemes.com",
+      "client": "Skyline Dynamics, Riyadh Airports Co.",
+      "date": "Apr 2020 - Jul 2019",
+      "website": "https://mazaya.vip/about",
       "services": [
-        "Branding",
-        "Web",
-        "Photography"
+        "Web development",
+        "Front-end"
+      ],
+      "techStacks": [
+        "Angular 6",
+        "Material UI"
       ]
     }
   },
   {
     "id": 5,
-    "title": "Minimau Typeface",
-    "category": "Website",
-    "thumb": "portfolio-5.jpg",
-    "description": "The majority have suffered alteration in some form, by injected humour lebmid. There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour lebmid. There are many variations of passages of Lorem Ipsum available.",
+    "title": "LinkU",
+    "category": "Full-stack Developer",
+    "thumb": "linku.jpg",
+    "description": "LinkU connects you with the most experienced, skilled and professional premium businesses to complete simple & complicated tasks. Any Job. Any Place. Any Time.\n\nMishaps occur, problems arise and things need updating in everyone’s life. But in our busy day-to-day lives, we all struggle to find the best and most reliable Aussie business to lend a helping hand when we need it most.\n\nLinkU is here to make it fast and easy to connect with the best businesses in each industry.\n\nHere, service providers are registered, certified, backed by insurance and ready to provide you with the highest level of service. Best of all, LinkU rewards businesses and customers alike with exclusive rewards and benefits.",
     "previewImages": [
-      "portfolio-5.jpg",
-      "portfolio-1.jpg"
+      "linku.jpg",
+      "linku-2.jpg"
     ],
     "meta": {
-      "client": "Rashed Jerry",
-      "date": "01/05/2021",
-      "website": "https://hasthemes.com",
+      "client": "Appetiser",
+      "date": "Feb 2019 - Aug 2020",
+      "website": "https://linku.com.au",
       "services": [
-        "Branding",
-        "Web",
-        "Photography"
+        "Web development",
+        "Front-end",
+        "Back-end",
+        "Full-stack"
+      ],
+      "techStacks": [
+        "Laravel",
+        "Vue.js",
+        "MySQL"
       ]
     }
   },
   {
     "id": 6,
-    "title": "Oil Dog Paint",
-    "category": "Design",
-    "thumb": "portfolio-6.jpg",
-    "description": "The majority have suffered alteration in some form, by injected humour lebmid. There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour lebmid. There are many variations of passages of Lorem Ipsum available.",
+    "title": "Realtyview",
+    "category": "Back-end Developer",
+    "thumb": "realtyview.jpg",
+    "description": "Offer Management for Realtors\nManage your Clients, Listings, and Offers. With RealtyView, you\ncan easily send, receive, and manage offers in one, innovative platform.",
     "previewImages": [
-      "portfolio-6.jpg",
-      "portfolio-2.jpg",
-      "portfolio-3.jpg"
+      "realtyview.jpg",
+      "realtyview-2.jpg",
+      "realtyview-3.jpg"
     ],
     "meta": {
-      "client": "Tasnim Khatun",
-      "date": "29/09/2021",
-      "website": "https://hasthemes.com",
+      "client": "Realtyview Inc.",
+      "date": "Mar 2021 - Jul 2021",
+      "website": "https://realtyview.com",
       "services": [
-        "Branding",
-        "Tech",
-        "Photography"
+        "Web development",
+        "Back-end"
+      ],
+      "techStacks": [
+        "Node.js",
+        "Express.js",
+        "MySQL",
+        "Sequelize ORM",
+        "Jest.js"
       ]
     }
   },
   {
     "id": 7,
-    "title": "Hardcover Book Cover",
-    "category": "Photography",
-    "thumb": "portfolio-7.jpg",
-    "description": "The majority have suffered alteration in some form, by injected humour lebmid. There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour lebmid. There are many variations of passages of Lorem Ipsum available.",
+    "title": "EPA",
+    "category": "Front-end Developer",
+    "thumb": "epa.jpg",
+    "description": "Expertfolio is a multi-module online portfolio for medical training. The system is built up of separate modules (resident portfolio containing form submissions and EPA, ultrasound portfolio, medical devices multimedia uploads). Depending on what modules the user is paying for, these modules will be enabled in his\nown Expertfolio.",
     "previewImages": [
-      "portfolio-7.jpg",
-      "portfolio-3.jpg"
+      "epa.jpg",
+      "epa-2.jpg"
     ],
     "meta": {
-      "client": "Hassan Al",
-      "date": "11/03/2021",
-      "website": "https://hasthemes.com",
+      "client": "ExpertCollege",
+      "date": "Aug 2020 - Present",
+      "website": "https://home.expertfolio.nl",
       "services": [
-        "Branding",
-        "Tech",
-        "Photography"
-      ]
-    }
-  },
-  {
-    "id": 8,
-    "title": "Flying Macbook 2",
-    "category": "Markup",
-    "thumb": "portfolio-8.jpg",
-    "description": "The majority have suffered alteration in some form, by injected humour lebmid. There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour lebmid. There are many variations of passages of Lorem Ipsum available.",
-    "previewImages": [
-      "portfolio-8.jpg",
-      "portfolio-4.jpg"
-    ],
-    "meta": {
-      "client": "Tasnim Khatun",
-      "date": "29/09/2021",
-      "website": "https://hasthemes.com",
-      "services": [
-        "Branding",
-        "Tech",
-        "Photography"
-      ]
-    }
-  },
-  {
-    "id": 9,
-    "title": "Portfolio Lorem ipsum",
-    "category": "Markup",
-    "thumb": "portfolio-9.jpg",
-    "description": "The majority have suffered alteration in some form, by injected humour lebmid. There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour lebmid. There are many variations of passages of Lorem Ipsum available.",
-    "previewImages": [
-      "portfolio-9.jpg",
-      "portfolio-6.jpg"
-    ],
-    "meta": {
-      "client": "John Doe",
-      "date": "31/08/2021",
-      "website": "https://hasthemes.com",
-      "services": [
-        "Branding",
-        "Tech",
-        "Photography"
-      ]
-    }
-  },
-  {
-    "id": 10,
-    "title": "Minimau Typeface",
-    "category": "Markup",
-    "thumb": "portfolio-10.jpg",
-    "description": "The majority have suffered alteration in some form, by injected humour lebmid. There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour lebmid. There are many variations of passages of Lorem Ipsum available.",
-    "previewImages": [
-      "portfolio-10.jpg",
-      "portfolio-4.jpg"
-    ],
-    "meta": {
-      "client": "Nasnim Shatun",
-      "date": "21/01/2021",
-      "website": "https://hasthemes.com",
-      "services": [
-        "Branding",
-        "Tech",
-        "Photography"
-      ]
-    }
-  },
-  {
-    "id": 11,
-    "title": "Hardcover Book Cover",
-    "category": "Photography",
-    "thumb": "portfolio-11.jpg",
-    "description": "The majority have suffered alteration in some form, by injected humour lebmid. There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour lebmid. There are many variations of passages of Lorem Ipsum available.",
-    "previewImages": [
-      "portfolio-11.jpg",
-      "portfolio-4.jpg"
-    ],
-    "meta": {
-      "client": "Khatun Bibi",
-      "date": "29/09/2021",
-      "website": "https://hasthemes.com",
-      "services": [
-        "Branding",
-        "Tech",
-        "Photography"
-      ]
-    }
-  },
-  {
-    "id": 12,
-    "title": "Flying Macbook",
-    "category": "Markup",
-    "thumb": "portfolio-12.jpg",
-    "description": "The majority have suffered alteration in some form, by injected humour lebmid. There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour lebmid. There are many variations of passages of Lorem Ipsum available.",
-    "previewImages": [
-      "portfolio-12.jpg",
-      "portfolio-4.jpg"
-    ],
-    "meta": {
-      "client": "Angel Sokina",
-      "date": "29/09/2021",
-      "website": "https://hasthemes.com",
-      "services": [
-        "Branding",
-        "Tech",
-        "Photography"
-      ]
-    }
-  },
-  {
-    "id": 13,
-    "title": "Minimau Typeface",
-    "category": "Website",
-    "thumb": "portfolio-13.jpg",
-    "description": "The majority have suffered alteration in some form, by injected humour lebmid. There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour lebmid. There are many variations of passages of Lorem Ipsum available.",
-    "previewImages": [
-      "portfolio-13.jpg",
-      "portfolio-4.jpg"
-    ],
-    "meta": {
-      "client": "Alex Tuntuni",
-      "date": "11/11/2021",
-      "website": "https://hasthemes.com",
-      "services": [
-        "Branding",
-        "Photography"
-      ]
-    }
-  },
-  {
-    "id": 14,
-    "title": "Oil Paint Dog Two",
-    "category": "Design",
-    "thumb": "portfolio-14.jpg",
-    "description": "The majority have suffered alteration in some form, by injected humour lebmid. There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour lebmid. There are many variations of passages of Lorem Ipsum available.",
-    "previewImages": [
-      "portfolio-14.jpg",
-      "portfolio-4.jpg"
-    ],
-    "meta": {
-      "client": "Jowel Mia",
-      "date": "09/09/2021",
-      "website": "https://hasthemes.com",
-      "services": [
-        "Branding",
-        "Tech"
-      ]
-    }
-  },
-  {
-    "id": 15,
-    "title": "Portfolio Lorem ipsum",
-    "category": "Markup",
-    "thumb": "portfolio-15.jpg",
-    "description": "Majority have suffered alteration in some form, by injected humour lebmid. There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour lebmid. There are many variations of passages of Lorem Ipsum available.",
-    "previewImages": [
-      "portfolio-15.jpg",
-      "portfolio-4.jpg"
-    ],
-    "meta": {
-      "client": "Humaun Khepa",
-      "date": "05/06/2021",
-      "website": "https://hasthemes.com",
-      "services": [
-        "Branding",
-        "Tech",
-        "Photography"
+        "Web development",
+        "Front-end"
+      ],
+      "techStacks": [
+        "Angular 9",
+        "RxJS",
+        "Material UI"
       ]
     }
   }

@@ -11,11 +11,16 @@
   },
   {
     "id": 3,
+    "media": "gitlab",
+    "url": "https://gitlab.com/jsgumban"
+  },
+  {
+    "id": 4,
     "media": "twitter",
     "url": "https://twitter.com/jsgumban"
   },
   {
-    "id": 4,
+    "id": 5,
     "media": "instagram",
     "url": "https://instagram.com/jsgumban"
   }

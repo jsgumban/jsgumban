@@ -9,12 +9,12 @@ const Logo = ({sideHeader}) => {
         <Fragment>
             {sideHeader?(
                 <Link to={`${process.env.PUBLIC_URL + '/'}`}>
-                    jsgumban.com
+                    jsgumban
                 </Link>
             ):(
                 <div className="header-logo col-lg-2 col-6 mt-40 mb-40">
                     <Link to={`${process.env.PUBLIC_URL + '/'}`}>
-                        jsgumban.com
+                        jsgumban
                     </Link>
                 </div>
             )}

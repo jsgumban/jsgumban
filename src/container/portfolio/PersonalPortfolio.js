@@ -11,8 +11,8 @@ const PersonalPortfolio = () => {
                 <Row>
                     <Col>
                         <SectionTitle
-                            title={'My Portfolios'}
-                            content={'Lorem ipsum, dolor sit amet consectetur adipisicing elit. Nulla, aliquam.'}
+                            title={'Web Development Projects'}
+                            content={`I have been working on I.T. industry as full-stack developer for about ${new Date().getFullYear() - 2016} years now.`}
                         />
                     </Col>
                 </Row>

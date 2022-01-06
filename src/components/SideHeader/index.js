@@ -97,7 +97,7 @@ const SideHeader = ({mobile}) => {
                                 </div>
 
                                 <div className="side-header-copyright">
-                                    <p>&copy; {new Date().getFullYear()} jsgumban.com. ALL RIGHT RESERVED</p>
+                                    <p>&copy; {new Date().getFullYear()} jsgumban. ALL RIGHT RESERVED</p>
                                 </div>
                             </div>
                         </div>
