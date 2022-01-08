@@ -8,6 +8,7 @@ import PersonalPortfolio from "../../container/portfolio/PersonalPortfolio";
 import PersonalPortfolioService from "../../container/service";
 import Contact from "../../container/contact";
 import Footer from "../../components/footer/FooterThree";
+import PersonalSkills from "../../container/skills/PersonalSkills";
 
 const HomePersonalPortfolio = () => {
 	return (
@@ -17,6 +18,7 @@ const HomePersonalPortfolio = () => {
 			<BannerPersonalPortfolio/>
 			<PersonalPortfolioService/>
 			<PersonalPortfolio/>
+			<PersonalSkills/>
 			<Contact/>
 			<Footer position={'static'}/>
 		</div>

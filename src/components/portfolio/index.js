@@ -1,13 +1,13 @@
 import React from 'react';
 import {Link} from 'react-router-dom'
 
-const Portfolio = ({id, thumb, classes, title, category, variant}) => {
+const Portfolio = ({id, thumb, classes, title, category, variant, hideLink}) => {
     const slug = title.toLowerCase().split(" ").join("-");
 
     return (
         <div className={`portfolio-item ${classes ? classes : ' '}`}>
             <Link
-                to={{
+                to={hideLink ? '#' : {
                     search: `?id=${id}`,
                     pathname: `${process.env.PUBLIC_URL}/portfolio/${slug}`
                 }}

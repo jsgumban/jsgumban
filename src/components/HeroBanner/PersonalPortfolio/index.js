@@ -5,7 +5,7 @@ import personalInfo from '../../../data/personalInfo'
 
 const BannerPersonalPortfolio = () => {
     return (
-        <HeroBannerContainer bg={bannerBg} overlay={false}>
+        <HeroBannerContainer overlay={false}>
             <div className="main-slider-content">
                 <h2>Hello , I’m</h2>
                 <h1>{personalInfo.name}</h1>

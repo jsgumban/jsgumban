@@ -6,10 +6,6 @@ const QuickContact = ({phone, email, location, linkedIn}) => {
             <h3>QUICK CONTACT</h3>
             <ul>
                 <li>
-                    <span>Phone/WhatsApp:</span>
-                    <a href={`tel:${phone}`}>{phone}</a>
-                </li>
-                <li>
                     <span>Email:</span>
                     <a href={`mailto:${email}`}>{email}</a>
                 </li>

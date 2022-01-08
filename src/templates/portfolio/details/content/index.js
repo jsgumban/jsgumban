@@ -22,13 +22,17 @@ const PortfolioDetailsContent = ({title, category, description, meta}) => {
                 <li>
                     <span>Tech stack:</span>
                     {meta?.techStacks?.map((techStack,index) => (
-                        <a key={index} href="/">{techStack}</a>
+                      <>
+                        <a key={index} href="/">{techStack}</a>&nbsp;
+                      </>
                     ))}
                 </li>
               <li>
                     <span>Service:</span>
                     {meta?.services.map((service,index) => (
-                        <a key={index} href="/">{service}</a>
+                      <>
+                        <a key={index} href="/">{service}</a>&nbsp;
+                      </>
                     ))}
                 </li>
             </ul>

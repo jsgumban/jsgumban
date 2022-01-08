@@ -6,13 +6,13 @@ import portfolios from '../../data/portfolio/index';
 
 const PersonalPortfolio = () => {
     return (
-        <div className="section pt-120 pt-lg-80 pt-md-80 pt-sm-80 pt-xs-50 pb-120 pb-lg-80 pb-md-80 pb-sm-80 pb-xs-50">
+      <div className="bg-grey-dark section pt-120 pt-lg-80 pt-md-80 pt-sm-80 pt-xs-50 pb-120 pb-lg-80 pb-md-80 pb-sm-80 pb-xs-50">
             <Container>
                 <Row>
                     <Col>
                         <SectionTitle
                             title={'Web Development Projects'}
-                            content={`I have been working on I.T. industry as full-stack developer for about ${new Date().getFullYear() - 2016} years now.`}
+                            content={`I have been working on I.T. industry as a full-stack web developer for about ${new Date().getFullYear() - 2016} years now.`}
                         />
                     </Col>
                 </Row>

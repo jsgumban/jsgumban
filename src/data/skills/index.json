@@ -1,0 +1,98 @@
+[
+	{
+		"id": 1,
+		"title": "Javascript",
+		"category": "Front-end, Back-end",
+		"thumb": "javascript.jpg"
+	},
+	{
+		"id": 2,
+		"title": "Typescript",
+		"category": "Front-end, Back-end",
+		"thumb": "typescript.jpg"
+	},
+	{
+		"id": 3,
+		"title": "HTML",
+		"category": "Front-end",
+		"thumb": "html.jpg"
+	},
+	{
+		"id": 4,
+		"title": "CSS",
+		"category": "Front-end",
+		"thumb": "css.jpg"
+	},
+	{
+		"id": 5,
+		"title": "React.js",
+		"category": "Front-end",
+		"thumb": "react.jpg"
+	},
+	{
+		"id": 6,
+		"title": "Redux",
+		"category": "Front-end",
+		"thumb": "redux.jpg"
+	},
+	{
+		"id": 7,
+		"title": "Angular",
+		"category": "Front-end",
+		"thumb": "angular.jpg"
+	},
+	{
+		"id": 8,
+		"title": "RxJs",
+		"category": "Front-end",
+		"thumb": "rxjs.jpg"
+	},
+	{
+		"id": 9,
+		"title": "Node.js",
+		"category": "Front-end, Back-end",
+		"thumb": "node.jpg"
+	},
+	{
+		"id": 10,
+		"title": "Express.js",
+		"category": "Back-end",
+		"thumb": "express.jpg"
+	},
+	{
+		"id": 11,
+		"title": "Jest.js",
+		"category": "Back-end",
+		"thumb": "jest.jpg"
+	},
+	{
+		"id": 12,
+		"title": "Sequelize.js",
+		"category": "Back-end",
+		"thumb": "sequelize.jpg"
+	},
+	{
+		"id": 13,
+		"title": "MySQL",
+		"category": "Back-end",
+		"thumb": "mysql.jpg"
+	},
+	{
+		"id": 14,
+		"title": "PostgreSQL",
+		"category": "Back-end",
+		"thumb": "postgresql.jpg"
+	},
+	{
+		"id": 15,
+		"title": "Docker",
+		"category": "Back-end",
+		"thumb": "docker.jpg"
+	},
+	{
+		"id": 16,
+		"title": "Laravel",
+		"category": "Back-end",
+		"thumb": "laravel.jpg"
+	}
+]
