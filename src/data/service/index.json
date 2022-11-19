@@ -1,8 +1,31 @@
 [
   {
     "id": 1,
+    "title": "CLOUD EMPLOYEE",
+    "position": "Senior Full Stack Developer - Fulltime (Mar 2022 - Present)",
+    "contents": [
+      "Participated in code reviews",
+      "Developed web applications using  React.js",
+      "Developed RESTful APIs using Node.js",
+      "Collaborated with teams in system planning and analysis",
+      "Using cypress and jest for unit testing",
+      "Using couchdb/mongo db for database management"
+  ]
+  },
+  {
+    "id": 2,
     "title": "EXPERTCOLLEGE",
-    "position": "Front-end Developer - Fulltime (Aug 2020 - Present)",
+    "position": "Front-end Developer - Fulltime (Aug 2019 - Feb 2022)",
+    "contents": [
+      "Participated in code reviews",
+      "Developed web applications using React.js",
+      "Collaborated with teams in system planning and analysis"
+    ]
+  },
+  {
+    "id": 3,
+    "title": "EXPERTCOLLEGE",
+    "position": "Front-end Developer - Fulltime (Aug 2019 - Feb 2022)",
     "contents": [
       "Participated in code reviews",
       "Developed web applications using Angular framework",
@@ -10,7 +33,7 @@
     ]
   },
   {
-    "id": 2,
+    "id": 4,
     "title": "REALTYVIEW INC.",
     "position": "Back-end Developer - Project-based (Mar 2021 - Jul 2021)",
     "contents": [
@@ -22,26 +45,28 @@
     ]
   },
   {
-    "id": 3,
+    "id": 5,
     "title": "APPETISER APPS",
     "position": "Front-end Developer - Fulltime (Feb 2019 - Aug 2020)",
     "contents": [
       "Participated in code reviews",
       "Developed different web applications using Vue.js",
-      "Architected and implemented RESTful APIs and microservices using Laravel framework, connecting to MySQL as its database"
+      "Architected and implemented RESTful APIs and microservices using Laravel framework",
+      "Using MySQL for database management"
     ]
   },
   {
-    "id": 4,
+    "id": 6,
     "title": "SKYLINE DYNAMICS",
     "position": "Front-end Developer - Project-based (Apr 2020 - Jul 2019)",
     "contents": [
+      "Participated in code reviews",
       "Collaborated with teams in system planning and analysis",
       "Developed a web booking application system for King Khalid International Airport using Angular framework"
     ]
   },
   {
-    "id": 5,
+    "id": 7,
     "title": "SATOSHI CITADEL INDUSTRIES",
     "position": "Front-end Developer - Fulltime (Sept 2016 - Sept 2018)",
     "contents": [
