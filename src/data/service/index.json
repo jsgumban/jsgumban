@@ -2,79 +2,51 @@
   {
     "id": 1,
     "title": "CLOUD EMPLOYEE",
-    "position": "Senior Full Stack Developer - Fulltime (Mar 2022 - Present)",
+    "position": "Senior Full Stack Developer (Mar 2022 - Present)",
     "contents": [
-      "Participated in code reviews",
+      "Used cypress and jest for unit testing",
       "Developed web applications using  React.js",
-      "Developed RESTful APIs using Node.js",
-      "Collaborated with teams in system planning and analysis",
-      "Using cypress and jest for unit testing",
-      "Using couchdb/mongo db for database management"
-  ]
+      "Developed RESTful APIs  and services using Node.js",
+      "Used couchdb/mongodb for database management"
+      "Collaborated with teams in system planning and analysis"
+    ]
   },
   {
     "id": 2,
-    "title": "PPC Ad Lab",
-    "position": "Front-end Developer - Proejct-based (Jan 2022 - Present)",
+    "title": "ExpertCollege",
+    "position": "Front End Developer (August 2020 - March 2022)",
     "contents": [
+      "Used typescript",
       "Participated in code reviews",
-      "Developed web applications using React.js",
+      "Developed web applications using  React.js",
+      "Developed frontend components using Material UI",
       "Collaborated with teams in system planning and analysis"
     ]
   },
   {
     "id": 3,
-    "title": "EXPERTCOLLEGE",
-    "position": "Front-end Developer - Fulltime (Aug 2019 - Feb 2022)",
+    "title": "Appetiser Apps",
+    "position": "Full Stack Developer (September 2018 - August 2020)",
     "contents": [
-      "Participated in code reviews",
-      "Developed web applications using Angular framework",
-      "Collaborated with teams in system planning and analysis"
+      "Used  MySQL for database management",
+      "Developed different web applications using",
+      "Developed frontend components using Bootstrap",
+      "Developed web applications using React.js/Redux and Vue.js",
+      "Architected and implemented RESTful APIs and microservices using Laravel framework"
     ]
   },
   {
     "id": 4,
-    "title": "REALTYVIEW INC.",
-    "position": "Back-end Developer - Project-based (Mar 2021 - Jul 2021)",
+    "title": "Satoshi Citadel Industries Ventures",
+    "position": "Full Stack Developer (September 2016 - September 2018)",
     "contents": [
-      "Developed RESTful APIs using Node.js",
-      "Implemented integration and unit testing using Jest.js",
-      "Designed data models in MySQL using Sequelize ORM framework",
-      "Maintain the central database to ensure high performance and request responsiveness",
-      "Worked closely with front-end team members to understand the data and requirements needed"
-    ]
-  },
-  {
-    "id": 5,
-    "title": "APPETISER APPS",
-    "position": "Front-end Developer - Fulltime (Feb 2019 - Aug 2020)",
-    "contents": [
-      "Participated in code reviews",
-      "Developed different web applications using Vue.js",
-      "Architected and implemented RESTful APIs and microservices using Laravel framework",
-      "Using MySQL for database management"
-    ]
-  },
-  {
-    "id": 6,
-    "title": "SKYLINE DYNAMICS",
-    "position": "Front-end Developer - Project-based (Apr 2020 - Jul 2019)",
-    "contents": [
-      "Participated in code reviews",
-      "Collaborated with teams in system planning and analysis",
-      "Developed a web booking application system for King Khalid International Airport using Angular framework"
-    ]
-  },
-  {
-    "id": 7,
-    "title": "SATOSHI CITADEL INDUSTRIES",
-    "position": "Front-end Developer - Fulltime (Sept 2016 - Sept 2018)",
-    "contents": [
-      "Participated in code reviews",
+      "Involved in system planning and analysis",
+      "Developed frontend components using Bootstrap",
+      "Developed web applications using React.js/Redux",
       "Implemented integration and unit testing using Mocha.js",
-      "Developed front-end web applications using React.js/Redux",
-      "Team lead for developing Citadax (cryptocurrency trading platform)",
-      "Architected and implemented RESTful APIs and microservices using Node.js, connecting to Postgresql as its database"
+      "Team lead for developing Citadax  (cryptocurrency trading platform)",
+      "Used PostgreSQL for connecting and managing microservices’ data",
+      "Architected and implemented RESTful APIs and microservices using Node.js"
     ]
   }
 ]
