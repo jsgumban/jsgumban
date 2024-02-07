@@ -146,7 +146,7 @@ const AccountForm = () => {
 	};
 	
 	const handleDeleteAccount = async (accountId) => {
-		setIsLoading(true);
+		// setIsLoading(true);
 		setError('');
 		try {
 			await apiClient.delete(`accounts/${accountId}`);
@@ -154,7 +154,7 @@ const AccountForm = () => {
 		} catch (err) {
 			setError('Failed to delete the account: ' + err.message);
 		} finally {
-			setIsLoading(false);
+			// setIsLoading(false);
 		}
 	};
 	

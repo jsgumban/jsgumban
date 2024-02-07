@@ -5,37 +5,37 @@ import {BrowserRouter as Router, Switch, Route} from 'react-router-dom';
 /*
 * @ Component Imported
 * */
-import TeamPage from "./pages/team";
-import AboutPage from "./pages/about";
-import ErrorPage from "./pages/404Error";
-import ContactPage from "./pages/contact";
-import ServicePage from "./pages/service";
-import HomeBlog from "./pages/home/HomeBlog";
-import HomeDefault from "./pages/home/HomeDefault";
-import HomeFiveColumn from './pages/home/HomeFiveColumn';
-import HomeFourColumn from "./pages/home/HomeFourColumn";
-import BlogThreeColumnPage from "./pages/blog/ThreeColumn";
-import HomeThreeColumn from "./pages/home/HomeThreeColumn";
-import PortfolioDetailsPage from "./pages/portfolio/details";
-import HomePersonalPortfolio from "./pages/home/HomePersonalPortfolio";
-import HomeFreelancerPortfolio from "./pages/home/HomeFreelancerPortfolio";
-import PortfolioGridTwoColumnPage from "./pages/portfolio/grid/two-column";
-import BlogDetailsLeftSidebarPage from "./pages/blog/BlogDetailsLeftSidebar";
-import BlogTwoColumnLeftSidebarPage from "./pages/blog/TwoColumnLeftSidebar";
-import PortfolioGridFourColumnPage from "./pages/portfolio/grid/four-column";
-import BlogDetailsWithoutSidebar from "./pages/blog/BlogDetailsWithoutSidebar";
-import PortfolioGridThreeColumnPage from "./pages/portfolio/grid/three-column";
-import BlogTwoColumnRightSidebarPage from "./pages/blog/TwoColumnRightSidebar";
-import BlogDetailsRightSidebarPage from "./pages/blog/BlogDetailsRightSidebar";
-import PortfolioMasonryTwoColumnPage from "./pages/portfolio/masonry/two-column";
-import PortfolioMasonryFourColumnPage from "./pages/portfolio/masonry/four-column";
-import PortfolioMasonryThreeColumnPage from "./pages/portfolio/masonry/three-column";
-import PortfolioGridFourColumnFullWidthPage from "./pages/portfolio/grid/four-column-fullwidth";
-import PortfolioGridFiveColumnFullWidthPage from "./pages/portfolio/grid/five-column-fullwidth";
-import PortfolioGridThreeColumnFullWidthPage from "./pages/portfolio/grid/three-column-fullwidth";
-import PortfolioMasonryFourColumnFullWidthPage from "./pages/portfolio/masonry/four-column-fullwidth";
-import PortfolioMasonryFiveColumnFullWidthPage from "./pages/portfolio/masonry/five-column-fullwidth";
-import PortfolioMasonryThreeColumnFullWidthPage from "./pages/portfolio/masonry/three-column-fullwidth";
+import TeamPage from "./pages/me/team";
+import AboutPage from "./pages/me/about";
+import ErrorPage from "./pages/common/not-found";
+import ContactPage from "./pages/me/contact";
+import ServicePage from "./pages/me/service";
+import HomeBlog from "./pages/me/home/HomeBlog";
+import HomeDefault from "./pages/me/home/HomeDefault";
+import HomeFiveColumn from './pages/me/home/HomeFiveColumn';
+import HomeFourColumn from "./pages/me/home/HomeFourColumn";
+import BlogThreeColumnPage from "./pages/me/blog/ThreeColumn";
+import HomeThreeColumn from "./pages/me/home/HomeThreeColumn";
+import PortfolioDetailsPage from "./pages/me/portfolio/details";
+import HomePersonalPortfolio from "./pages/me/home/HomePersonalPortfolio";
+import HomeFreelancerPortfolio from "./pages/me/home/HomeFreelancerPortfolio";
+import PortfolioGridTwoColumnPage from "./pages/me/portfolio/grid/two-column";
+import BlogDetailsLeftSidebarPage from "./pages/me/blog/BlogDetailsLeftSidebar";
+import BlogTwoColumnLeftSidebarPage from "./pages/me/blog/TwoColumnLeftSidebar";
+import PortfolioGridFourColumnPage from "./pages/me/portfolio/grid/four-column";
+import BlogDetailsWithoutSidebar from "./pages/me/blog/BlogDetailsWithoutSidebar";
+import PortfolioGridThreeColumnPage from "./pages/me/portfolio/grid/three-column";
+import BlogTwoColumnRightSidebarPage from "./pages/me/blog/TwoColumnRightSidebar";
+import BlogDetailsRightSidebarPage from "./pages/me/blog/BlogDetailsRightSidebar";
+import PortfolioMasonryTwoColumnPage from "./pages/me/portfolio/masonry/two-column";
+import PortfolioMasonryFourColumnPage from "./pages/me/portfolio/masonry/four-column";
+import PortfolioMasonryThreeColumnPage from "./pages/me/portfolio/masonry/three-column";
+import PortfolioGridFourColumnFullWidthPage from "./pages/me/portfolio/grid/four-column-fullwidth";
+import PortfolioGridFiveColumnFullWidthPage from "./pages/me/portfolio/grid/five-column-fullwidth";
+import PortfolioGridThreeColumnFullWidthPage from "./pages/me/portfolio/grid/three-column-fullwidth";
+import PortfolioMasonryFourColumnFullWidthPage from "./pages/me/portfolio/masonry/four-column-fullwidth";
+import PortfolioMasonryFiveColumnFullWidthPage from "./pages/me/portfolio/masonry/five-column-fullwidth";
+import PortfolioMasonryThreeColumnFullWidthPage from "./pages/me/portfolio/masonry/three-column-fullwidth";
 import Finance from "./pages/finance";
 
 const App = () => {
@@ -45,6 +45,7 @@ const App = () => {
                 <Switch>
                     <Route path={`${process.env.PUBLIC_URL + "/portfolio/:id"}`} component={PortfolioDetailsPage}/>
                     <Route exact path={`${process.env.PUBLIC_URL + "/"}`} component={HomePersonalPortfolio}/>
+                    
                     <Route exact path={`${process.env.PUBLIC_URL + "/finance"}`} component={Finance}/>
                     <Route exact component={ErrorPage}/>
                     
