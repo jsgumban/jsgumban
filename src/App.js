@@ -45,6 +45,7 @@ const App = () => {
                 <Switch>
                     <Route path={`${process.env.PUBLIC_URL + "/portfolio/:id"}`} component={PortfolioDetailsPage}/>
                     <Route exact path={`${process.env.PUBLIC_URL + "/"}`} component={HomePersonalPortfolio}/>
+                    <Route exact path={`${process.env.PUBLIC_URL + "/me"}`} component={HomePersonalPortfolio}/>
                     
                     <Route exact path={`${process.env.PUBLIC_URL + "/finance"}`} component={Finance}/>
                     <Route exact component={ErrorPage}/>
