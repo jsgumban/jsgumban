@@ -36,76 +36,79 @@ import PortfolioGridThreeColumnFullWidthPage from "./pages/portfolio/grid/three-
 import PortfolioMasonryFourColumnFullWidthPage from "./pages/portfolio/masonry/four-column-fullwidth";
 import PortfolioMasonryFiveColumnFullWidthPage from "./pages/portfolio/masonry/five-column-fullwidth";
 import PortfolioMasonryThreeColumnFullWidthPage from "./pages/portfolio/masonry/three-column-fullwidth";
+import Finance from "./pages/finance";
 
 const App = () => {
     return (
         <Fragment>
             <Router>
                 <Switch>
-                    <Route path={`${process.env.PUBLIC_URL + "/contact"}`}
-                           component={ContactPage}/>
-                    <Route path={`${process.env.PUBLIC_URL + "/team"}`}
-                           component={TeamPage}/>
-                    <Route path={`${process.env.PUBLIC_URL + "/service"}`}
-                           component={ServicePage}/>
-                    <Route path={`${process.env.PUBLIC_URL + "/blog-details-without-sidebar"}`}
-                           component={BlogDetailsWithoutSidebar}/>
-                    <Route path={`${process.env.PUBLIC_URL + "/blog-details-left-sidebar"}`}
-                           component={BlogDetailsLeftSidebarPage}/>
-                    <Route path={`${process.env.PUBLIC_URL + "/blog-details"}`}
-                           component={BlogDetailsRightSidebarPage}/>
-                    <Route path={`${process.env.PUBLIC_URL + "/blog-two-column-left-sidebar"}`}
-                           component={BlogTwoColumnLeftSidebarPage}/>
-                    <Route path={`${process.env.PUBLIC_URL + "/blog-two-column-right-sidebar"}`}
-                           component={BlogTwoColumnRightSidebarPage}/>
-                    <Route path={`${process.env.PUBLIC_URL + "/blog"}`}
-                           component={BlogThreeColumnPage}/>
-                    <Route path={`${process.env.PUBLIC_URL + "/portfolio/:id"}`}
-                           component={PortfolioDetailsPage}/>
-                    <Route path={`${process.env.PUBLIC_URL + "/portfolio-masonry-five-column-fullwidth"}`}
-                           component={PortfolioMasonryFiveColumnFullWidthPage}/>
-                    <Route path={`${process.env.PUBLIC_URL + "/portfolio-masonry-four-column-fullwidth"}`}
-                           component={PortfolioMasonryFourColumnFullWidthPage}/>
-                    <Route path={`${process.env.PUBLIC_URL + "/portfolio-masonry-three-column-fullwidth"}`}
-                           component={PortfolioMasonryThreeColumnFullWidthPage}/>
-                    <Route path={`${process.env.PUBLIC_URL + "/portfolio-masonry-four-column"}`}
-                           component={PortfolioMasonryFourColumnPage}/>
-                    <Route path={`${process.env.PUBLIC_URL + "/portfolio-masonry-three-column"}`}
-                           component={PortfolioMasonryThreeColumnPage}/>
-                    <Route path={`${process.env.PUBLIC_URL + "/portfolio-masonry-two-column"}`}
-                           component={PortfolioMasonryTwoColumnPage}/>
-                    <Route path={`${process.env.PUBLIC_URL + "/portfolio-grid-five-column-fullwidth"}`}
-                           component={PortfolioGridFiveColumnFullWidthPage}/>
-                    <Route path={`${process.env.PUBLIC_URL + "/portfolio-grid-four-column-fullwidth"}`}
-                           component={PortfolioGridFourColumnFullWidthPage}/>
-                    <Route path={`${process.env.PUBLIC_URL + "/portfolio-grid-three-column-fullwidth"}`}
-                           component={PortfolioGridThreeColumnFullWidthPage}/>
-                    <Route path={`${process.env.PUBLIC_URL + "/portfolio-grid-four-column"}`}
-                           component={PortfolioGridFourColumnPage}/>
-                    <Route path={`${process.env.PUBLIC_URL + "/portfolio-grid-three-column"}`}
-                           component={PortfolioGridThreeColumnPage}/>
-                    <Route path={`${process.env.PUBLIC_URL + "/portfolio-grid-two-column"}`}
-                           component={PortfolioGridTwoColumnPage}/>
-                    <Route path={`${process.env.PUBLIC_URL + "/about"}`}
-                           component={AboutPage}/>
-                    <Route path={`${process.env.PUBLIC_URL + "/home-freelancer-portfolio"}`}
-                           component={HomeFreelancerPortfolio}/>
-                    <Route path={`${process.env.PUBLIC_URL + "/home-personal-portfolio"}`}
-                           component={HomePersonalPortfolio}/>
-                    <Route path={`${process.env.PUBLIC_URL + "/home-blog"}`}
-                           component={HomeBlog}/>
-                    <Route path={`${process.env.PUBLIC_URL + "/home-five-column"}`}
-                           component={HomeFiveColumn}/>
-                    <Route path={`${process.env.PUBLIC_URL + "/home-four-column"}`}
-                           component={HomeFourColumn}/>
-                    <Route path={`${process.env.PUBLIC_URL + "/home-three-column"}`}
-                           component={HomeThreeColumn}/>
-                    <Route path={`${process.env.PUBLIC_URL + "/home-default"}`}
-                           component={HomeDefault}/>
-                    <Route exact path={`${process.env.PUBLIC_URL + "/"}`}
-                           component={HomePersonalPortfolio}
-                    />
+                    <Route path={`${process.env.PUBLIC_URL + "/portfolio/:id"}`} component={PortfolioDetailsPage}/>
+                    <Route exact path={`${process.env.PUBLIC_URL + "/"}`} component={HomePersonalPortfolio}/>
+                    <Route exact path={`${process.env.PUBLIC_URL + "/finance"}`} component={Finance}/>
                     <Route exact component={ErrorPage}/>
+                    
+                    
+                    {/*<Route path={`${process.env.PUBLIC_URL + "/contact"}`}*/}
+                    {/*       component={ContactPage}/>*/}
+                    {/*<Route path={`${process.env.PUBLIC_URL + "/team"}`}*/}
+                    {/*       component={TeamPage}/>*/}
+                    {/*<Route path={`${process.env.PUBLIC_URL + "/service"}`}*/}
+                    {/*       component={ServicePage}/>*/}
+                    {/*<Route path={`${process.env.PUBLIC_URL + "/blog-details-without-sidebar"}`}*/}
+                    {/*       component={BlogDetailsWithoutSidebar}/>*/}
+                    {/*<Route path={`${process.env.PUBLIC_URL + "/blog-details-left-sidebar"}`}*/}
+                    {/*       component={BlogDetailsLeftSidebarPage}/>*/}
+                    {/*<Route path={`${process.env.PUBLIC_URL + "/blog-details"}`}*/}
+                    {/*       component={BlogDetailsRightSidebarPage}/>*/}
+                    {/*<Route path={`${process.env.PUBLIC_URL + "/blog-two-column-left-sidebar"}`}*/}
+                    {/*       component={BlogTwoColumnLeftSidebarPage}/>*/}
+                    {/*<Route path={`${process.env.PUBLIC_URL + "/blog-two-column-right-sidebar"}`}*/}
+                    {/*       component={BlogTwoColumnRightSidebarPage}/>*/}
+                    {/*<Route path={`${process.env.PUBLIC_URL + "/blog"}`}*/}
+                    {/*       component={BlogThreeColumnPage}/>*/}
+                    {/*<Route path={`${process.env.PUBLIC_URL + "/portfolio-masonry-five-column-fullwidth"}`}*/}
+                    {/*       component={PortfolioMasonryFiveColumnFullWidthPage}/>*/}
+                    {/*<Route path={`${process.env.PUBLIC_URL + "/portfolio-masonry-four-column-fullwidth"}`}*/}
+                    {/*       component={PortfolioMasonryFourColumnFullWidthPage}/>*/}
+                    {/*<Route path={`${process.env.PUBLIC_URL + "/portfolio-masonry-three-column-fullwidth"}`}*/}
+                    {/*       component={PortfolioMasonryThreeColumnFullWidthPage}/>*/}
+                    {/*<Route path={`${process.env.PUBLIC_URL + "/portfolio-masonry-four-column"}`}*/}
+                    {/*       component={PortfolioMasonryFourColumnPage}/>*/}
+                    {/*<Route path={`${process.env.PUBLIC_URL + "/portfolio-masonry-three-column"}`}*/}
+                    {/*       component={PortfolioMasonryThreeColumnPage}/>*/}
+                    {/*<Route path={`${process.env.PUBLIC_URL + "/portfolio-masonry-two-column"}`}*/}
+                    {/*       component={PortfolioMasonryTwoColumnPage}/>*/}
+                    {/*<Route path={`${process.env.PUBLIC_URL + "/portfolio-grid-five-column-fullwidth"}`}*/}
+                    {/*       component={PortfolioGridFiveColumnFullWidthPage}/>*/}
+                    {/*<Route path={`${process.env.PUBLIC_URL + "/portfolio-grid-four-column-fullwidth"}`}*/}
+                    {/*       component={PortfolioGridFourColumnFullWidthPage}/>*/}
+                    {/*<Route path={`${process.env.PUBLIC_URL + "/portfolio-grid-three-column-fullwidth"}`}*/}
+                    {/*       component={PortfolioGridThreeColumnFullWidthPage}/>*/}
+                    {/*<Route path={`${process.env.PUBLIC_URL + "/portfolio-grid-four-column"}`}*/}
+                    {/*       component={PortfolioGridFourColumnPage}/>*/}
+                    {/*<Route path={`${process.env.PUBLIC_URL + "/portfolio-grid-three-column"}`}*/}
+                    {/*       component={PortfolioGridThreeColumnPage}/>*/}
+                    {/*<Route path={`${process.env.PUBLIC_URL + "/portfolio-grid-two-column"}`}*/}
+                    {/*       component={PortfolioGridTwoColumnPage}/>*/}
+                    {/*<Route path={`${process.env.PUBLIC_URL + "/about"}`}*/}
+                    {/*       component={AboutPage}/>*/}
+                    {/*<Route path={`${process.env.PUBLIC_URL + "/home-freelancer-portfolio"}`}*/}
+                    {/*       component={HomeFreelancerPortfolio}/>*/}
+                    {/*<Route path={`${process.env.PUBLIC_URL + "/home-personal-portfolio"}`}*/}
+                    {/*       component={HomePersonalPortfolio}/>*/}
+                    {/*<Route path={`${process.env.PUBLIC_URL + "/home-blog"}`}*/}
+                    {/*       component={HomeBlog}/>*/}
+                    {/*<Route path={`${process.env.PUBLIC_URL + "/home-five-column"}`}*/}
+                    {/*       component={HomeFiveColumn}/>*/}
+                    {/*<Route path={`${process.env.PUBLIC_URL + "/home-four-column"}`}*/}
+                    {/*       component={HomeFourColumn}/>*/}
+                    {/*<Route path={`${process.env.PUBLIC_URL + "/home-three-column"}`}*/}
+                    {/*       component={HomeThreeColumn}/>*/}
+                    {/*<Route path={`${process.env.PUBLIC_URL + "/home-default"}`}*/}
+                    {/*       component={HomeDefault}/>*/}
+                    
+                    
                 </Switch>
             </Router>
         </Fragment>
