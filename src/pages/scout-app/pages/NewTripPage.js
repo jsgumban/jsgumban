@@ -1,8 +1,9 @@
-import React from 'react';
+import React, {useState} from 'react';
 import Container from 'react-bootstrap/Container';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import {useHistory} from "react-router-dom";
+import CustomDateRangePicker from "../components/CustomDateRangePicker";
 
 const NewTripPage = () => {
 	let history = useHistory();
@@ -26,9 +27,7 @@ const NewTripPage = () => {
 				<Form.Group controlId="formDates">
 					<Form.Label>Dates *</Form.Label>
 					<div className="d-flex">
-						<Form.Control type="date" required />
-						<span className="mx-2">→</span>
-						<Form.Control type="date" required />
+						<CustomDateRangePicker/>
 					</div>
 				</Form.Group>
 				

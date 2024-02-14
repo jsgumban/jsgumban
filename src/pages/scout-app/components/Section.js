@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Form, Button } from 'react-bootstrap';
 import '../styles/Section.scss'; // Assuming you have SCSS set up for styling
 
 const Section = ({ title, items, onAddItem, sectionKey }) => {
@@ -15,13 +16,19 @@ const Section = ({ title, items, onAddItem, sectionKey }) => {
 			{items.map((item, index) => (
 				<div key={index}>{item}</div>
 			))}
-			<input
-				type="text"
-				value={inputValue}
-				onChange={e => setInputValue(e.target.value)}
-				placeholder={`Add ${title}`}
-			/>
-			<button onClick={handleAddClick}>Add</button>
+			<Form>
+				<Form.Group controlId={`formBasicEmail-${sectionKey}`}>
+					<Form.Control
+						type="text"
+						value={inputValue}
+						onChange={e => setInputValue(e.target.value)}
+						placeholder={`Add ${title}`}
+					/>
+				</Form.Group>
+				<Button variant="primary" onClick={handleAddClick}>
+					Add
+				</Button>
+			</Form>
 		</div>
 	);
 };
