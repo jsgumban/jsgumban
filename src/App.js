@@ -38,6 +38,10 @@ import PortfolioMasonryFiveColumnFullWidthPage from "./pages/me/portfolio/masonr
 import PortfolioMasonryThreeColumnFullWidthPage from "./pages/me/portfolio/masonry/three-column-fullwidth";
 import Finance from "./pages/finance";
 import FlashCard from "./pages/flash-card";
+import ScoutApp from "./pages/scout-app";
+import HomePage from "./pages/scout-app/pages/HomePage";
+import NewTripPage from "./pages/scout-app/pages/NewTripPage";
+import TripDetailPage from "./pages/scout-app/pages/TripDetailsPage";
 
 const App = () => {
     return (
@@ -50,6 +54,11 @@ const App = () => {
                     
                     <Route exact path={`${process.env.PUBLIC_URL + "/finance"}`} component={Finance}/>
                     <Route exact path={`${process.env.PUBLIC_URL + "/flash-card"}`} component={FlashCard}/>
+                    
+                    
+                    <Route exact path={`${process.env.PUBLIC_URL + "/scout/home"}`} component={HomePage}/>
+                    <Route exact path={`${process.env.PUBLIC_URL + "/scout/new"}`} component={NewTripPage}/>
+                    <Route exact path={`${process.env.PUBLIC_URL + "/scout/t/:tripId"}`} component={TripDetailPage}/>
                     <Route exact component={ErrorPage}/>
                     
                     
