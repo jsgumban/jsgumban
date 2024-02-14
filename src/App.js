@@ -37,6 +37,7 @@ import PortfolioMasonryFourColumnFullWidthPage from "./pages/me/portfolio/masonr
 import PortfolioMasonryFiveColumnFullWidthPage from "./pages/me/portfolio/masonry/five-column-fullwidth";
 import PortfolioMasonryThreeColumnFullWidthPage from "./pages/me/portfolio/masonry/three-column-fullwidth";
 import Finance from "./pages/finance";
+import FlashCard from "./pages/flash-card";
 
 const App = () => {
     return (
@@ -48,6 +49,7 @@ const App = () => {
                     <Route exact path={`${process.env.PUBLIC_URL + "/me"}`} component={HomePersonalPortfolio}/>
                     
                     <Route exact path={`${process.env.PUBLIC_URL + "/finance"}`} component={Finance}/>
+                    <Route exact path={`${process.env.PUBLIC_URL + "/flash-card"}`} component={FlashCard}/>
                     <Route exact component={ErrorPage}/>
                     
                     

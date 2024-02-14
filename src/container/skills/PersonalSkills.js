@@ -2,7 +2,6 @@ import React from 'react';
 import {Container, Row, Col} from 'react-bootstrap';
 import SectionTitle from "../../components/SectionTitle";
 import Portfolio from "../../components/portfolio";
-import portfolios from '../../data/portfolio/index';
 import skills from '../../data/skills/index'
 
 const PersonalSkills = () => {
