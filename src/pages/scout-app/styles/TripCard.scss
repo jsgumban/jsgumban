@@ -1,5 +1,5 @@
 .tripCard {
-  width: 18rem;
-  margin: 1rem;
-  // Add more SCSS styles as needed
+  margin: 0.5rem;
+  width: calc(25% - 1rem); // Adjust the width for 4 items per row
+  // Add additional styles here
 }

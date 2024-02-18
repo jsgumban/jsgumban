@@ -1,0 +1,22 @@
+.DateRangePicker, .DateRangePickerInput {
+  display: block;
+  width: 100%;
+}
+
+.DateRangePickerInput {
+  border: 1px solid #ced4da;
+  border-radius: 0.25rem;
+  padding: 1px;
+  transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+}
+
+.DateInput_input {
+  font-size: 1rem;
+  border-bottom: 0;
+}
+
+.DateRangePicker_picker {
+  //top: 42px !important; /* Adjust based on your input height */
+}
+
+/* Additional styling to match your form */

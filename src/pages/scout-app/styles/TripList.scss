@@ -1,6 +1,6 @@
 .tripList {
   display: flex;
   flex-wrap: wrap;
-  justify-content: center;
-  // Add more SCSS styles as needed
+  justify-content: space-between; // This will handle spacing between the cards
+  // Add additional styles here
 }

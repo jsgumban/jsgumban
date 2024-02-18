@@ -4,7 +4,7 @@ import Section from '../components/Section';
 import Map from '../components/Map';
 import '../styles/TripDetailsPage.scss';
 
-const TripDetailPage = () => {
+const TripDetailsPage = () => {
 	const { tripId } = useParams();
 	const [sections, setSections] = useState({
 		notes: '',
@@ -63,4 +63,4 @@ const TripDetailPage = () => {
 	);
 };
 
-export default TripDetailPage;
+export default TripDetailsPage;

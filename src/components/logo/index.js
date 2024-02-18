@@ -8,12 +8,12 @@ const Logo = ({sideHeader}) => {
     return (
         <Fragment>
             {sideHeader?(
-                <Link to={`${process.env.PUBLIC_URL + '/'}`}>
+                <Link to={`${process.env.PUBLIC_URL + '/'}`} style={{ textDecoration: "none", color: "inherit"}}>
                     jsgumban
                 </Link>
             ):(
                 <div className="header-logo col-lg-2 col-6 mt-40 mb-40">
-                    <Link to={`${process.env.PUBLIC_URL + '/'}`}>
+                    <Link to={`${process.env.PUBLIC_URL + '/'}`} style={{ textDecoration: "none", color: "inherit"}}>
                         jsgumban
                     </Link>
                 </div>
