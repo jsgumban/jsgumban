@@ -1,0 +1,72 @@
+.custom-toggle {
+  display: flex;
+  align-items: center; /* Center items vertically */
+  justify-content: space-between; /* Space between text and toggle */
+  width: 100%; /* Stretch horizontally */
+}
+
+.custom-toggle-input {
+  /* Hidden but accessible */
+  opacity: 0;
+  position: absolute; /* Make sure it doesn't take space */
+  z-index: -1; /* Put it behind the label visually */
+}
+
+.custom-toggle-label {
+  /* Custom toggle appearance */
+  cursor: pointer;
+  width: 50px; /* Width of the toggle */
+  height: 25px; /* Height of the toggle */
+  background-color: #ccc;
+  border-radius: 100px;
+  position: relative; /* For the toggle handle positioning */
+}
+
+.custom-toggle-label:after {
+  /* Handle for the toggle */
+  content: '';
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 21px;
+  height: 21px;
+  background-color: white;
+  border-radius: 21px;
+  transition: 0.4s;
+}
+
+.custom-toggle-input:checked + .custom-toggle-label {
+  background-color: #2196F3;
+}
+
+.custom-toggle-input:checked + .custom-toggle-label:after {
+  /* Move the handle when checked */
+  transform: translateX(25px);
+}
+
+
+.transaction-container {
+  position: relative; /* This makes the positioning of children absolute relative to this container */
+  /* Your existing styles for the container */
+}
+
+.btn-fab {
+  position: absolute; /* Absolute position */
+  bottom: 20px; /* Distance from bottom of the container */
+  right: 20px; /* Distance from right of the container */
+  width: 56px; /* Width and height for a circular shape */
+  height: 56px;
+  border-radius: 50%; /* Rounded borders */
+  background-color: #ffa500; /* Orange background */
+  color: #ffffff; /* White text color */
+  text-align: center; /* Center the content */
+  box-shadow: 0 2px 5px 0 rgba(0,0,0,0.26); /* Shadow for the button */
+  font-size: 24px; /* Larger font size for the plus sign */
+  line-height: 40px; /* Center the plus sign vertically */
+  z-index: 10; /* Ensure it's above other items within the container */
+}
+
+.btn-fab:hover {
+  background-color: #e69500; /* Darker orange on hover */
+  cursor: pointer; /* Indicate clickable item */
+}

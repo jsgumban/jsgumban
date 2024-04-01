@@ -39,6 +39,7 @@ import PortfolioMasonryThreeColumnFullWidthPage from "./pages/me/portfolio/mason
 import Finance from "./pages/finance";
 import FlashCard from "./pages/flash-card";
 import ScoutApp from "./pages/scout-app";
+import BillsApp from "./pages/bills";
 
 const App = () => {
     return (
@@ -54,6 +55,7 @@ const App = () => {
     
     
                     <Route path={`${process.env.PUBLIC_URL + "/scout"}`} component={ScoutApp}/>
+                    <Route path={`${process.env.PUBLIC_URL + "/bills"}`} component={BillsApp}/>
                     <Route exact component={ErrorPage}/>
                     
                     
