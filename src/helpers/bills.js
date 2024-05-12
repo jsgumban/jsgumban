@@ -140,13 +140,19 @@ export const convertMonth = (dateString) => {
 }
 
 export const convertDate = (input) => {
-	// Split the input string by the dash character to get the year, month, and day parts
-	const parts = input.split("-");
+	// Attempt to parse the input string into a Date object
+	const date = new Date(input);
 	
-	// Extract the month and day parts
-	const month = parts[1];
-	const day = parts[2];
+	// Check if the date is valid
+	if (isNaN(date.getTime())) {
+		throw new Error("Invalid date format");
+	}
+	
+	// Extract the month and day from the Date object
+	const month = (date.getMonth() + 1).toString().padStart(2, '0'); // GetMonth returns 0-11; add 1 for 1-12
+	const day = date.getDate().toString().padStart(2, '0'); // GetDate returns the day of the month (1-31)
 	
 	// Return the formatted string as "MM/DD"
 	return `${month}/${day}`;
 }
+

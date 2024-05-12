@@ -315,7 +315,7 @@ const RenderTransactionTable = ({ transactions, formFields, handleShowTransactio
 									{Object.entries(weeks).map(([week, { dateRange, transactions, totalExpenses, totalIncome }]) => (
 										<div key={week}>
 											<div className="card custom-panel mb-3">
-												<div className={`card-header ${isOpen && 'bg-grey-dark'}`}>
+												<div className={`card-header`} style={{ background: isOpen && '#FFDE7B66'}}>
 													<div className="row">
 														<div className="col text-center">
 															<span className="mr-2">{convertDate(dateRange.start)} ~ {convertDate(dateRange.end)}</span>

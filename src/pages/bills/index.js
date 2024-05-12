@@ -2,21 +2,20 @@ import React, {useEffect, useState} from 'react';
 import Accounts from "./pages/accounts";
 import apiClient from "../../helpers/api";
 import Transactions from "./pages/transactions";
+import Bills from "./pages/bills";
 
 // Placeholder pages for demonstration
 const Dashboard = () => <div>Home Content</div>;
-const Bills = () => <div>Bills Content</div>;
 const Budget = () => <div>Budget Content</div>;
 
 const BillsApp = () => {
-	const [activeTab, setActiveTab] = useState('transactions');
+	const [activeTab, setActiveTab] = useState('bills');
 	const [defaults, setDefaults] = useState();
 	
 	// Define tabs and their corresponding pages in an array
 	const tabs = [
 		{ id: 'dashboard', title: 'Dashboard', Component: Dashboard },
 		{ id: 'bills', title: 'Bills', Component: Bills },
-		{ id: 'budget', title: 'Budget', Component: Budget },
 		{ id: 'transactions', title: 'Transactions', Component: Transactions },
 		{ id: 'accounts', title: 'Accounts', Component: Accounts },
 	];
