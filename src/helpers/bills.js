@@ -156,3 +156,26 @@ export const convertDate = (input) => {
 	return `${month}/${day}`;
 }
 
+
+
+export const getDueDate = (billingCycle) => {
+	const dueDate = new Date(billingCycle.end);
+	dueDate.setDate(dueDate.getDate() + 21); // Adding 21 days to end of billing cycle
+	const remainingDays = Math.ceil((dueDate - new Date()) / (1000 * 60 * 60 * 24));
+	return { date: dueDate, remainingDays };
+};
+
+export const getBillingCycle = (transaction, account) => {
+	const transactionDate = new Date(transaction.transactionDate);
+	const lastMonth = new Date(transactionDate);
+	lastMonth.setMonth(lastMonth.getMonth() - 1);
+	
+	const lastMonthBillGenDate = new Date(lastMonth.getFullYear(), lastMonth.getMonth(), parseInt(account.billGenerationDate) + 1);
+	const thisMonthBillGenDate = new Date(transactionDate.getFullYear(), transactionDate.getMonth(), parseInt(account.billGenerationDate));
+	thisMonthBillGenDate.setDate(thisMonthBillGenDate.getDate() - 1); // Subtract one day to get last day of previous month
+	
+	return {
+		start: lastMonthBillGenDate,
+		end: thisMonthBillGenDate,
+	}
+};
