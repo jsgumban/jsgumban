@@ -47,7 +47,7 @@ const WeekTransactions = (props) => {
 	const currentMonthTransactions = useMemo(() => {
 		return transactions.reduce((acc, transaction) => {
 			const account = accounts.find(acc => acc._id === transaction.transactionAccountId);
-			const dueDateObj = getDueDate(getBillingCycle(transaction, account));
+			const dueDateObj = getDueDate(getBillingCycle(transaction, account), account, transaction);
 			const monthYearKey = `${dueDateObj.date.getMonth()}-${dueDateObj.date.getFullYear()}`;
 			const firstSundayOfMonth = firstMondayOfMonth;
 			const weekNumber = Math.floor((dueDateObj.date - firstSundayOfMonth) / (7 * 24 * 60 * 60 * 1000)) + 1; // Calculate week number

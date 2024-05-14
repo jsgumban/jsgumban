@@ -24,7 +24,7 @@ const TransactionItem = (props) => {
 		return transactions.reduce((acc, transaction) => {
 			const account = accounts.find(acc => acc._id === transaction.transactionAccountId);
 			const billingCycle = getBillingCycle(transaction, account);
-			const dueDate = getDueDate(billingCycle);
+			const dueDate = getDueDate(billingCycle, account, transaction);
 			
 			if (dueDate.date >= week.start && dueDate.date <= week.end) {
 				acc.push({ ...transaction, account, dueDate });

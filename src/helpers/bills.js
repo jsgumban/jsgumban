@@ -157,25 +157,56 @@ export const convertDate = (input) => {
 }
 
 
-
-export const getDueDate = (billingCycle) => {
-	const dueDate = new Date(billingCycle.end);
-	dueDate.setDate(dueDate.getDate() + 21); // Adding 21 days to end of billing cycle
-	const remainingDays = Math.ceil((dueDate - new Date()) / (1000 * 60 * 60 * 24));
-	return { date: dueDate, remainingDays };
+// Utility function to strip time from a date
+const stripTime = (date) => {
+	const strippedDate = new Date(date);
+	strippedDate.setHours(0, 0, 0, 0);
+	return strippedDate;
 };
 
+// Function to get the billing cycle based on the transaction date and account bill generation date
 export const getBillingCycle = (transaction, account) => {
-	const transactionDate = new Date(transaction.transactionDate);
-	const lastMonth = new Date(transactionDate);
-	lastMonth.setMonth(lastMonth.getMonth() - 1);
+	const billGenerationDate = account.billGenerationDate;
+	const transactionDate = stripTime(new Date(transaction.transactionDate));
 	
-	const lastMonthBillGenDate = new Date(lastMonth.getFullYear(), lastMonth.getMonth(), parseInt(account.billGenerationDate) + 1);
-	const thisMonthBillGenDate = new Date(transactionDate.getFullYear(), transactionDate.getMonth(), parseInt(account.billGenerationDate));
-	thisMonthBillGenDate.setDate(thisMonthBillGenDate.getDate() - 1); // Subtract one day to get last day of previous month
+	const year = transactionDate.getFullYear();
+	const month = transactionDate.getMonth();
 	
-	return {
-		start: lastMonthBillGenDate,
-		end: thisMonthBillGenDate,
+	// Calculate cycle start and end dates
+	let cycleStartDate;
+	let cycleEndDate;
+	
+	// If the transaction date is before the bill generation date of the current month
+	if (transactionDate.getDate() < billGenerationDate) {
+		cycleStartDate = new Date(year, month - 1, billGenerationDate);
+		cycleEndDate = new Date(year, month, billGenerationDate - 1);
+	} else {
+		// If the transaction date is on or after the bill generation date of the current month
+		cycleStartDate = new Date(year, month, billGenerationDate);
+		cycleEndDate = new Date(year, month + 1, billGenerationDate - 1);
 	}
+	
+	// Strip the time portion from cycle start and end dates
+	cycleStartDate = stripTime(cycleStartDate);
+	cycleEndDate = stripTime(cycleEndDate);
+	
+	return { start: cycleStartDate, end: cycleEndDate };
+};
+
+// Function to get the due date based on the billing cycle end date and account bill due date
+export const getDueDate = (billingCycle, account) => {
+	const billingCycleEndDate = stripTime(new Date(billingCycle.end));
+	const billDueDate = account.billDueDate;
+	
+	// Calculate the due date based on the billing cycle end date and account's bill due date
+	let dueDate = new Date(billingCycleEndDate);
+	dueDate.setDate(billDueDate);
+	
+	// If the due date is before the billing cycle end date, move it to the next month
+	if (dueDate <= billingCycleEndDate) {
+		dueDate.setMonth(dueDate.getMonth() + 1);
+	}
+	
+	const remainingDays = Math.ceil((dueDate - stripTime(new Date())) / (1000 * 60 * 60 * 24));
+	return { date: dueDate, remainingDays };
 };
