@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import Accounts from "./pages/accounts";
 import apiClient from "../../helpers/api";
-import Transactions from "./pages/transactions";
+import Transactions from "./pages/transactions/transactions";
 import './styles/custom.scss'
 import Payables from "./pages/payables/payables";
 
