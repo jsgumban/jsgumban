@@ -9,6 +9,7 @@ export  const formatReadableDate = (dateString) => {
 }
 
 export const isValidDate = (dateString) => {
+	console.log('dateStringX: ', dateString);
 	if (!dateString) return false;
 	
 	// Extract the date part before the 'T'
@@ -59,18 +60,54 @@ export const makeValueReadable = (formFields, key, value) => {
 		value = formatMoneyIntl(value);
 	}
 
-	if (field.reactType == 'date') {
+	if (field?.reactType == 'date') {
 		value = formatReadableDate(value)
 	}
 	
 	return value;
 }
 
-export const getValueByKey = (formFields, key, value) => {
-	const data = formFields.find(x => x.name == key);
-	const source = data.source.find(x => x.id == value);
-	return source?.name;
-}
+export const getValueByKey = (formFieldsConfig, key, value) => {
+	// Flatten the configuration to merge common and type-specific fields
+	const flattenConfig = (config) => {
+		let flattened = [];
+		
+		if (config.common && Array.isArray(config.common)) {
+			// Add common fields
+			flattened = flattened.concat(config.common);
+		}
+		
+		if (config.types && typeof config.types === 'object') {
+			// Add type-specific fields
+			Object.values(config.types).forEach(typeFields => {
+				if (Array.isArray(typeFields)) {
+					flattened = flattened.concat(typeFields);
+				}
+			});
+		}
+		
+		return flattened;
+	};
+	
+	// Ensure formFieldsConfig is defined
+	if (!formFieldsConfig || typeof formFieldsConfig !== 'object') {
+		console.error("Invalid formFieldsConfig:", formFieldsConfig);
+		return null;
+	}
+	
+	// Flatten the form fields configuration
+	const flattenedConfig = flattenConfig(formFieldsConfig);
+	
+	// Find the field with the specified key
+	const data = flattenedConfig.find(x => x.name === key);
+	if (!data) return null;
+	
+	// Find the value in the source array
+	const source = data.source?.find(x => x.id === value);
+	return source?.name || null;
+};
+
+
 
 export const makeKeyReadable = (key) => {
 	// Split the key into words based on uppercase letters
@@ -85,25 +122,6 @@ export const makeKeyReadable = (key) => {
 
 export const getFontColorByTransactionType = (type) => {
 	return type == 'income' ? 'text-primary' : 'text-danger'
-}
-
-export const getWeekDateRange = (date) => {
-	const currentDate = new Date(date);
-	const firstDayOfWeek = new Date(
-		currentDate.setDate(currentDate.getDate() - currentDate.getDay() + 1)
-	);
-	const lastDayOfWeek = new Date(firstDayOfWeek);
-	lastDayOfWeek.setDate(lastDayOfWeek.getDate() + 6);
-	
-	const formatDay = (date) =>
-		`${date.getFullYear()}-${(date.getMonth() + 1)
-			.toString()
-			.padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')}`;
-	
-	return {
-		start: formatDay(firstDayOfWeek),
-		end: formatDay(lastDayOfWeek),
-	};
 }
 
 
@@ -166,7 +184,7 @@ const stripTime = (date) => {
 
 // Function to get the billing cycle based on the transaction date and account bill generation date
 export const getBillingCycle = (transaction, account) => {
-	const billGenerationDate = account.billGenerationDate;
+	const billGenerationDate = account?.billGenerationDate;
 	const transactionDate = stripTime(new Date(transaction.transactionDate));
 	
 	const year = transactionDate.getFullYear();
@@ -196,7 +214,7 @@ export const getBillingCycle = (transaction, account) => {
 // Function to get the due date based on the billing cycle end date and account bill due date
 export const getDueDate = (billingCycle, account) => {
 	const billingCycleEndDate = stripTime(new Date(billingCycle.end));
-	const billDueDate = account.billDueDate;
+	const billDueDate = account?.billDueDate;
 	
 	// Calculate the due date based on the billing cycle end date and account's bill due date
 	let dueDate = new Date(billingCycleEndDate);
@@ -210,3 +228,22 @@ export const getDueDate = (billingCycle, account) => {
 	const remainingDays = Math.ceil((dueDate - stripTime(new Date())) / (1000 * 60 * 60 * 24));
 	return { date: dueDate, remainingDays };
 };
+
+export const getWeekDateRange = (date) => {
+	const currentDate = new Date(date);
+	const firstDayOfWeek = new Date(
+		currentDate.setDate(currentDate.getDate() - currentDate.getDay() + 1)
+	);
+	const lastDayOfWeek = new Date(firstDayOfWeek);
+	lastDayOfWeek.setDate(lastDayOfWeek.getDate() + 6);
+	
+	const formatDay = (date) =>
+		`${date.getFullYear()}-${(date.getMonth() + 1)
+			.toString()
+			.padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')}`;
+	
+	return {
+		start: formatDay(firstDayOfWeek),
+		end: formatDay(lastDayOfWeek),
+	};
+}
