@@ -9,7 +9,7 @@ const TransactionModal = ({ showModal, handleCloseModal, handleSubmit, form, han
 			</Modal.Header>
 			<Modal.Body>
 				<Form onSubmit={handleSubmit}>
-					{filteredFields.map(field => (
+					{filteredFields.filter(x => !x.hidden).map(field => (
 						<Form.Group key={field.name} className="mb-3">
 							<Form.Label htmlFor={field.name}>{field.placeholder}</Form.Label>
 							{field.reactType === 'select' ? (

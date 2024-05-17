@@ -1,8 +1,8 @@
 import React from 'react';
-import { Row, Col, Button, ListGroup } from 'react-bootstrap';
+import { Row, Col, Button, ListGroup, Badge } from 'react-bootstrap';
 import { getDayInfo, formatMoneyIntl, formatReadableDate, getBillingCycle, getDueDate } from "../../../../helpers/bills";
 
-const PayableTransactionItem = ({ transaction, account, startEditTransaction, deleteTransaction }) => {
+const PayableTransactionItem = ({ transaction, account, startEditTransaction, deleteTransaction, openPayModal }) => {
 	const billingCycle = getBillingCycle(transaction, account);
 	const dueDate = getDueDate(billingCycle, account);
 	
@@ -24,11 +24,20 @@ const PayableTransactionItem = ({ transaction, account, startEditTransaction, de
 					<div><strong>Transaction Date:</strong> {formatReadableDate(transaction.transactionDate)}</div>
 					<div><strong>Billing Cycle:</strong> {billingCycle.start.toLocaleDateString()} - {billingCycle.end.toLocaleDateString()}</div>
 					{transaction.transactionNote && <div><strong>Note:</strong> {transaction.transactionNote}</div>}
+					<div>
+						<strong>Status:</strong>
+						{transaction.paid ? <Badge variant="success" className="ml-2">Paid</Badge> : <Badge variant="warning" className="ml-2">Unpaid</Badge>}
+					</div>
 				</Col>
 				<Col xs={3} className="text-right">
 					<div className="text-danger mb-2">{formatMoneyIntl(transaction.transactionAmount)}</div>
-					<Button variant="outline-primary" size="sm" className="mr-2" onClick={() => startEditTransaction(transaction)}>Edit</Button>
-					<Button variant="outline-danger" size="sm" onClick={() => deleteTransaction(transaction._id)}>Delete</Button>
+					{!transaction.paid && (
+						<>
+							<Button variant="outline-primary" size="sm" className="mr-2" onClick={() => startEditTransaction(transaction)}>Edit</Button>
+							<Button variant="outline-danger" size="sm" className="mr-2" onClick={() => deleteTransaction(transaction._id)}>Delete</Button>
+							<Button variant="outline-success" size="sm" onClick={() => openPayModal(transaction)}>Pay</Button>
+						</>
+					)}
 				</Col>
 			</Row>
 		</ListGroup.Item>
