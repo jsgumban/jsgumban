@@ -130,17 +130,17 @@ const Accounts = (props) => {
 							{groupedAccounts[type].map(account => (
 								<ListGroup.Item key={account._id}>
 									<Row>
-										<Col xs={3}>
+										<Col xs={5}>
 											<div><span className="text-muted">Name:</span> {account.name}</div>
 											<div><span className="text-muted">Type:</span> {getAccountTypeName(account.typeId)}</div>
 											<div><span className="text-muted">Bank:</span> {getBankName(account.bankId)}</div>
 										</Col>
-										<Col xs={6}>
+										<Col xs={5}>
 											<div><span className="text-muted">Account Number:</span> {account.accountNumber}</div>
 											<div><span className="text-muted">Credit Limit:</span> {formatMoneyIntl(account.creditLimit)}</div>
 											<div><span className="text-muted">Total Outstanding:</span> {formatMoneyIntl(account.totalOutstanding)}</div>
 										</Col>
-										<Col xs={3} className="text-right">
+										<Col xs={2} className="text-right">
 											<Button variant="outline-primary" size="sm" className="mr-2" onClick={() => startEditAccount(account)}>Edit</Button>
 											<Button variant="outline-danger" size="sm" onClick={() => deleteAccount(account._id)}>Delete</Button>
 										</Col>

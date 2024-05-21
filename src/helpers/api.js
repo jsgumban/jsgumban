@@ -5,7 +5,6 @@ const apiClient = axios.create({
 	baseURL: process.env.REACT_APP_API_URL || 'http://localhost:5001/',
 	headers: {
 		'Content-Type': 'application/json',
-		// Optionally, add authorization or other headers here
 	},
 });
 
@@ -14,7 +13,12 @@ apiClient.interceptors.response.use(
 	response => response,
 	error => {
 		// Handle global errors (e.g., logging or redirecting)
-		console.error('API call error:', error);
+		if (error.response && error.response.status === 401) {
+			// Remove token and redirect to login if 401 Unauthorized
+			localStorage.removeItem('token');
+		} else {
+			console.error('API call error:', error);
+		}
 		return Promise.reject(error);
 	}
 );
@@ -26,7 +30,5 @@ apiClient.interceptors.request.use(config => {
 	}
 	return config;
 });
-
-
 
 export default apiClient;

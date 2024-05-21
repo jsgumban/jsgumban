@@ -19,7 +19,7 @@ const Payables = (props) => {
 	const [selectedTransaction, setSelectedTransaction] = useState(null);
 	const [filterType, setFilterType] = useState('month');
 	const [filterValue, setFilterValue] = useState(`${new Date().getFullYear()}-${String(new Date().getMonth() + 1).padStart(2, '0')}`);
-	const payableTypes = ["loan_payment", "installment", "expense", "credit_card_expense"];
+	const payableTypes = ["loan_payment", "installment", "expense", "credit_card_expense", "credit_card_out"];
 	
 	useEffect(() => {
 		fetchTransactions();
