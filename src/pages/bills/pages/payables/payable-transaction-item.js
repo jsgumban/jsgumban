@@ -6,6 +6,8 @@ const PayableTransactionItem = ({ transaction, account, startEditTransaction, de
 	const billingCycle = getBillingCycle(transaction, account);
 	const dueDate = getDueDate(billingCycle, account);
 	
+	console.log('accountX: ', account);
+	
 	return (
 		<ListGroup.Item key={transaction._id}>
 			<Row>
@@ -20,7 +22,7 @@ const PayableTransactionItem = ({ transaction, account, startEditTransaction, de
 				</Col>
 				<Col xs={6}>
 					<div><strong>Due Date:</strong> {dueDate.date.toLocaleDateString()}</div>
-					<div><strong>Account:</strong> {account ? account.name : 'N/A'}</div>
+					<div><strong>Account:</strong> {account ? account.name + ' (' + account.accountNumber + ')': 'N/A'}</div>
 					<div><strong>Transaction Date:</strong> {formatReadableDate(transaction.transactionDate)}</div>
 					<div><strong>Billing Cycle:</strong> {billingCycle.start.toLocaleDateString()} - {billingCycle.end.toLocaleDateString()}</div>
 					{transaction.transactionNote && <div><strong>Note:</strong> {transaction.transactionNote}</div>}

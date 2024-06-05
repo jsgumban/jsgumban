@@ -224,6 +224,7 @@ const Transactions = (props) => {
 																account={account}
 																startEditTransaction={startEditTransaction}
 																deleteTransaction={deleteTransaction}
+																transactionTypes={transactionTypes}
 															/>
 														);
 													})}

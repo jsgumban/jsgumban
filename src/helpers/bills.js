@@ -68,43 +68,15 @@ export const makeValueReadable = (formFields, key, value) => {
 }
 
 export const getValueByKey = (formFieldsConfig, key, value) => {
-	// Flatten the configuration to merge common and type-specific fields
-	const flattenConfig = (config) => {
-		let flattened = [];
-		
-		if (config.common && Array.isArray(config.common)) {
-			// Add common fields
-			flattened = flattened.concat(config.common);
-		}
-		
-		if (config.types && typeof config.types === 'object') {
-			// Add type-specific fields
-			Object.values(config.types).forEach(typeFields => {
-				if (Array.isArray(typeFields)) {
-					flattened = flattened.concat(typeFields);
-				}
-			});
-		}
-		
-		return flattened;
-	};
-	
 	// Ensure formFieldsConfig is defined
 	if (!formFieldsConfig || typeof formFieldsConfig !== 'object') {
 		console.error("Invalid formFieldsConfig:", formFieldsConfig);
 		return null;
 	}
 	
-	// Flatten the form fields configuration
-	const flattenedConfig = flattenConfig(formFieldsConfig);
-	
 	// Find the field with the specified key
-	const data = flattenedConfig.find(x => x.name === key);
-	if (!data) return null;
-	
-	// Find the value in the source array
-	const source = data.source?.find(x => x.id === value);
-	return source?.name || null;
+	const data = formFieldsConfig.find(x => x.id === key);
+	return data?.name || null;
 };
 
 

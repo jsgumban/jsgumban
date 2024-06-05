@@ -2,7 +2,8 @@ import React from 'react';
 import { Row, Col, Button, ListGroup, Badge } from 'react-bootstrap';
 import { getValueByKey, formatMoneyIntl, formatReadableDate, getDayInfo } from "../../../../helpers/bills";
 
-const TransactionItem = ({ transaction, account, startEditTransaction, deleteTransaction }) => {
+const TransactionItem = ({ transaction, account, startEditTransaction, deleteTransaction, transactionTypes }) => {
+	console.log('transactionTypesX: ', transactionTypes);
 	return (
 		<ListGroup.Item key={transaction._id}>
 			<Row>
@@ -16,7 +17,7 @@ const TransactionItem = ({ transaction, account, startEditTransaction, deleteTra
 				</Col>
 				<Col xs={6}>
 					<div><strong>Date:</strong> {formatReadableDate(transaction.transactionDate)}</div>
-					<div><strong>Type:</strong> {getValueByKey(transaction.transactionTypeId)}</div>
+					<div><strong>Type:</strong> {getValueByKey(transactionTypes, transaction.transactionTypeId)}</div>
 					<div><strong>Account:</strong> {account ? account.name : 'N/A'}</div>
 					{transaction.transactionNote && <div><strong>Note:</strong> {transaction.transactionNote}</div>}
 					<div>
