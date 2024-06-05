@@ -47,7 +47,7 @@ const AccountModal = ({ showModal, handleCloseModal, handleSubmit, form, handleI
 									id={field.name}
 									name={field.name}
 									value={form[field.name]}
-									onChange={handleInputChange}
+									onChange={e => handleInputChange(e, field)}
 								>
 									<option value="">Select {field.placeholder}</option>
 									{(field.source || []).map(option => (
@@ -60,7 +60,7 @@ const AccountModal = ({ showModal, handleCloseModal, handleSubmit, form, handleI
 									id={field.name}
 									name={field.name}
 									value={field.reactType === 'date' && form[field.name] ? form[field.name].split('T')[0] : form[field.name]}
-									onChange={handleInputChange}
+									onChange={e => handleInputChange(e, field)}
 									placeholder={field.placeholder}
 								/>
 							)}

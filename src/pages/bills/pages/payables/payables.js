@@ -46,9 +46,14 @@ const Payables = (props) => {
 		setForm(initialFormState);
 	};
 	
-	const handleInputChange = (e) => {
+	const handleInputChange = (e, field) => {
 		const { name, value } = e.target;
-		setForm({ ...form, [name]: value });
+		if (field?.reactType === 'number') {
+			form[name] = parseFloat(value) || 0;
+		} else {
+			form[name] = value;
+		}
+		setForm({ ...form });
 	};
 	
 	const handleSubmit = async (e) => {

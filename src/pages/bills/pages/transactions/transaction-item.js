@@ -3,7 +3,6 @@ import { Row, Col, Button, ListGroup, Badge } from 'react-bootstrap';
 import { getValueByKey, formatMoneyIntl, formatReadableDate, getDayInfo } from "../../../../helpers/bills";
 
 const TransactionItem = ({ transaction, account, startEditTransaction, deleteTransaction, transactionTypes }) => {
-	console.log('transactionTypesX: ', transactionTypes);
 	return (
 		<ListGroup.Item key={transaction._id}>
 			<Row>

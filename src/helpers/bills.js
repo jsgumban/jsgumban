@@ -9,7 +9,6 @@ export  const formatReadableDate = (dateString) => {
 }
 
 export const isValidDate = (dateString) => {
-	console.log('dateStringX: ', dateString);
 	if (!dateString) return false;
 	
 	// Extract the date part before the 'T'

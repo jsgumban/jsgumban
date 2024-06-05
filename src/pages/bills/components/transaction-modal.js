@@ -31,7 +31,7 @@ const TransactionModal = ({ showModal, handleCloseModal, handleSubmit, form, han
 									id={field.name}
 									name={field.name}
 									value={field.reactType === 'date' && form[field.name] ? form[field.name].split('T')[0] : form[field.name]}
-									onChange={handleInputChange}
+									onChange={e => handleInputChange(e, field)}
 									placeholder={field.placeholder}
 								/>
 							)}

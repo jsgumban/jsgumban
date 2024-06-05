@@ -6,8 +6,6 @@ const PayableTransactionItem = ({ transaction, account, startEditTransaction, de
 	const billingCycle = getBillingCycle(transaction, account);
 	const dueDate = getDueDate(billingCycle, account);
 	
-	console.log('accountX: ', account);
-	
 	return (
 		<ListGroup.Item key={transaction._id}>
 			<Row>
