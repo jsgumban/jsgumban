@@ -6,9 +6,9 @@ import TransactionModal from "../../components/transaction-modal";
 import {convertDate, formatMoneyIntl, getDayInfo, getWeekDateRange} from "../../../../helpers/bills";
 import FinancingItem from "./financing-item";
 import FinancingFilter from "./financing-filter";
+import { buildStyles, CircularProgressbarWithChildren } from "react-circular-progressbar";
 
-
-const Financing = ( props) => {
+const Financing = (props) => {
 	const { transactions: transactionsConfig, transactionTypes, categories, repeatOptions } = props.defaults;
 	const [transactions, setTransactions] = useState([]);
 	const [accounts, setAccounts] = useState([]);
@@ -19,13 +19,21 @@ const Financing = ( props) => {
 	const [filterType, setFilterType] = useState('month');
 	const [filterValue, setFilterValue] = useState(`${new Date().getFullYear()}-${String(new Date().getMonth() + 1).padStart(2, '0')}`);
 	
-	const filteredTransactionTypes = ["financing_in", "financing_out"];
+	const filteredTransactionTypes = ["financing_out"];
 	
 	useEffect(() => {
 		fetchTransactions();
 		fetchAccounts();
 		initializeForm();
 	}, []);
+	
+	const openPayModal = (transaction) => {
+		console.log('transactionX: ', transaction);
+		setIsEditing(true);
+		setSelectedTransaction(transaction);
+		setForm({ ...transaction, transactionTypeId: 'financing_in', transactionDate: new Date().toISOString() });
+		setShowModal(true);
+	};
 	
 	const fetchTransactions = async () => {
 		const response = await apiClient.get('/bills/transactions');
@@ -59,7 +67,11 @@ const Financing = ( props) => {
 	const handleSubmit = async (e) => {
 		e.preventDefault();
 		if (isEditing) {
-			await updateTransaction(selectedTransaction._id);
+			if (form.transactionTypeId === 'financing_in') {
+				await payTransaction();
+			} else {
+				await updateTransaction(selectedTransaction._id);
+			}
 		} else {
 			await createTransaction();
 		}
@@ -67,6 +79,28 @@ const Financing = ( props) => {
 		setSelectedTransaction(null);
 		initializeForm();
 		setShowModal(false);
+	};
+	
+	const payTransaction = async () => {
+		const counterTransaction = {
+			transactionTypeId: form.transactionTypeId,
+			transactionDate: form.transactionDate,
+			transactionAmount: form.transactionAmount,
+			transactionAccountId: form.transactionAccountId,
+			relatedTransactionId: form._id,
+			transactionNote: `Payment for transaction ${form._id}`
+		};
+		const response = await apiClient.post('/bills/transactions', counterTransaction);
+		
+		if (response && response.data) {
+			const updatedTransaction = {
+				paid: true,
+				paymentDate: new Date().toISOString(),
+				relatedTransactionId: response.data._id,
+			};
+			await apiClient.patch(`/bills/transactions/${form._id}`, updatedTransaction);
+		}
+		fetchTransactions();
 	};
 	
 	const createTransaction = async () => {
@@ -157,8 +191,14 @@ const Financing = ( props) => {
 		setFilterValue(value);
 	};
 	
-	const totalAmount = filterTransactions().reduce((total, transaction) => total + transaction.transactionAmount, 0);
 	const filteredTransactions = filterTransactions();
+	
+	const totalDue = filteredTransactions.reduce((total, transaction) => total + transaction.totalTransactionAmount, 0);
+	const paid = filteredTransactions.filter(transaction => transaction.paid).reduce((total, transaction) => total + transaction.transactionAmount, 0);
+	const remaining = totalDue - paid;
+	const totalEarnings = filteredTransactions.reduce((total, transaction) => total + (transaction.totalTransactionAmount - transaction.transactionAmount - transaction.serviceFee), 0);
+	
+	const totalAmount = filteredTransactions.reduce((total, transaction) => total + transaction.transactionAmount, 0);
 	
 	const isCurrentWeek = (start, end) => {
 		const today = new Date();
@@ -184,104 +224,167 @@ const Financing = ( props) => {
 				filterValue={filterValue}
 				onFilterChange={handleFilterChange}
 			/>
+			<div className="card custom-panel mb-4">
+				<div className="card-header text-white bg-danger">
+					<Row>
+						<Col className="text-center">Earnings</Col>
+						<Col className="text-center">Total Due</Col>
+						<Col className="text-center">Paid</Col>
+						<Col className="text-center">Remaining</Col>
+					</Row>
+				</div>
+				<div className="card-body">
+					<Row>
+						<Col className="text-center text-warning">{formatMoneyIntl(totalEarnings)}</Col>
+						<Col className="text-center text-danger">{formatMoneyIntl(totalDue)}</Col>
+						<Col className="text-center text-success">{formatMoneyIntl(paid)}</Col>
+						<Col className="text-center">{formatMoneyIntl(remaining)}</Col>
+						
+					</Row>
+				</div>
+			</div>
+			
 			<div className="mb-4">
-				<div className="card custom-panel mb-3">
-					<div className="card-header text-white bg-danger">
-						<div className="row">
-							<div className="col text-center">Total Amount</div>
-						</div>
-					</div>
-					<div className="card-body">
-						<div className="row">
-							<div className="col text-center text-pastel-red">{formatMoneyIntl(totalAmount)}</div>
-						</div>
-					</div>
-				</div>
-				<div>
-					<ListGroup variant="flush">
-						{filteredTransactions.length === 0 ? (
-							<ListGroup.Item>
-								<div className="text-muted">No transactions for this period.</div>
-							</ListGroup.Item>
-						) : filterType === 'month' ? (
-							Object.entries(groupByWeek(filteredTransactions)).sort(([weekRangeA], [weekRangeB]) => new Date(weekRangeA.split(' - ')[0]) - new Date(weekRangeB.split(' - ')[0])).map(([weekRange, weekTransactions]) => {
-								const totalAmount = weekTransactions.reduce((total, transaction) => total + transaction.transactionAmount, 0);
-								const [start, end] = weekRange.split(' - ');
-								const borderClass = isCurrentWeek(start, end) ? 'border-warning' : '';
-								return (
-									<div key={weekRange}>
-										<div className={`card mb-4 ${borderClass}`}>
-											<div className="card-header">
-												<div className="row">
-													<div className="col-6 text-left">
-														<div className="font-weight-bold">
-															{weekRange}
-														</div>
+				<ListGroup variant="flush">
+					{filteredTransactions.length === 0 ? (
+						<ListGroup.Item>
+							<div className="text-muted">No transactions for this period.</div>
+						</ListGroup.Item>
+					) : filterType === 'month' ? (
+						Object.entries(groupByWeek(filteredTransactions)).sort(([weekRangeA], [weekRangeB]) => new Date(weekRangeA.split(' - ')[0]) - new Date(weekRangeB.split(' - ')[0])).map(([weekRange, weekTransactions]) => {
+							const weekTotalDue = weekTransactions.reduce((total, transaction) => total + transaction.totalTransactionAmount, 0);
+							const weekPaid = weekTransactions.filter(transaction => transaction.paid).reduce((total, transaction) => total + transaction.transactionAmount, 0);
+							const weekRemaining = weekTotalDue - weekPaid;
+							
+							const progress = weekTotalDue ? (weekPaid / weekTotalDue) * 100 : 0;
+							const isFilled = progress >= 100; // Determine if the progress is filled
+							const progressColor = isFilled ? '#28a745' : '#ffc107'; // Success or warning color
+							
+							
+							const [start, end] = weekRange.split(' - ');
+							const borderClass = isCurrentWeek(start, end) ? 'border-warning' : '';
+							return (
+								<div key={weekRange}>
+									<div className={`card mb-4 ${borderClass}`}>
+										<div className="card-header">
+											<div className="row">
+												<div className="col-6 d-flex align-items-center">
+													<div style={{ width: 40, height: 40, marginRight: "10px" }}>
+														<CircularProgressbarWithChildren
+															value={progress}
+															text={`${Math.round(progress)}%`}
+															styles={buildStyles({
+																textSize: '25px',
+																pathColor: progressColor,
+																textColor: progressColor,
+																trailColor: '#d6d6d6',
+																backgroundColor: '#f8f9fa',
+																strokeLinecap: 'round'
+															})}
+														/>
 													</div>
-													<div className="col text-right text-primary">{formatMoneyIntl(totalAmount)}</div>
+													<div className="font-weight-bold">
+														{weekRange}
+													</div>
+												</div>
+												<div className="col text-right text-success">{formatMoneyIntl(weekPaid)}</div>
+												<div className="col text-right text-danger">
+													{formatMoneyIntl(weekTotalDue)}
+													<div style={{ fontSize: '0.75em', color: '#6c757d' }}>
+														{formatMoneyIntl(weekRemaining)}
+													</div>
 												</div>
 											</div>
-											<div className="card-body">
-												<ListGroup variant="flush">
-													{weekTransactions.sort((a, b) => new Date(a.transactionDate) - new Date(b.transactionDate)).map(transaction => {
-														const account = accounts.find(acc => acc._id === transaction.transactionAccountId);
-														return (
-															<FinancingItem
-																key={transaction._id}
-																transaction={transaction}
-																account={account}
-																startEditTransaction={startEditTransaction}
-																deleteTransaction={deleteTransaction}
-																transactionTypes={transactionTypes}
-															/>
-														);
-													})}
-												</ListGroup>
-											</div>
+										</div>
+										<div className="card-body">
+											<ListGroup variant="flush">
+												{weekTransactions.sort((a, b) => new Date(a.transactionDate) - new Date(b.transactionDate)).map(transaction => {
+													const account = accounts.find(acc => acc._id === transaction.transactionAccountId);
+													return (
+														<FinancingItem
+															key={transaction._id}
+															transaction={transaction}
+															account={account}
+															startEditTransaction={startEditTransaction}
+															deleteTransaction={deleteTransaction}
+															transactionTypes={transactionTypes}
+															openPayModal={openPayModal}
+														/>
+													);
+												})}
+											</ListGroup>
 										</div>
 									</div>
-								)
-							})
-						) : (
-							Object.entries(groupByMonth(filteredTransactions)).map(([month, monthTransactions]) => {
-								const totalAmount = monthTransactions.reduce((total, transaction) => total + transaction.transactionAmount, 0);
-								const borderClass = isCurrentMonth(month) ? 'border-warning' : '';
-								return (
-									<div key={month}>
-										<div className={`card mb-4 ${borderClass}`}>
-											<div className="card-header">
-												<div className="row">
-													<div className="col-6 text-left">
-														<div className="font-weight-bold">
-															{month}
-														</div>
+								</div>
+							)
+						})
+					) : (
+						Object.entries(groupByMonth(filteredTransactions)).map(([month, monthTransactions]) => {
+							const monthTotalDue = monthTransactions.reduce((total, transaction) => total + transaction.totalTransactionAmount, 0);
+							const monthPaid = monthTransactions.filter(transaction => transaction.paid).reduce((total, transaction) => total + transaction.transactionAmount, 0);
+							const monthRemaining = monthTotalDue - monthPaid;
+							const borderClass = isCurrentMonth(month) ? 'border-warning' : '';
+							
+							const progress = monthTotalDue ? (monthPaid / monthTotalDue) * 100 : 0;
+							const isFilled = progress >= 100; // Determine if the progress is filled
+							const progressColor = isFilled ? '#28a745' : '#ffc107'; // Success or warning color
+							
+							return (
+								<div key={month}>
+									<div className={`card mb-4 ${borderClass}`}>
+										<div className="card-header">
+											<div className="row">
+												<div className="col-6 d-flex align-items-center">
+													<div style={{ width: 40, height: 40, marginRight: "10px" }}>
+														<CircularProgressbarWithChildren
+															value={progress}
+															text={`${Math.round(progress)}%`}
+															styles={buildStyles({
+																textSize: '25px',
+																pathColor: progressColor,
+																textColor: progressColor,
+																trailColor: '#d6d6d6',
+																backgroundColor: '#f8f9fa',
+																strokeLinecap: 'round'
+															})}
+														/>
 													</div>
-													<div className="col text-right text-primary">{formatMoneyIntl(totalAmount)}</div>
+													<div className="font-weight-bold">
+														{month}
+													</div>
+												</div>
+												<div className="col text-right text-success">{formatMoneyIntl(monthPaid)}</div>
+												<div className="col text-right text-danger">
+													{formatMoneyIntl(monthTotalDue)}
+													<div style={{ fontSize: '0.75em', color: '#6c757d' }}>
+														{formatMoneyIntl(monthRemaining)}
+													</div>
 												</div>
 											</div>
-											<div className="card-body">
-												<ListGroup variant="flush">
-													{monthTransactions.sort((a, b) => new Date(a.transactionDate) - new Date(b.transactionDate)).map(transaction => {
-														const account = accounts.find(acc => acc._id === transaction.transactionAccountId);
-														return (
-															<FinancingItem
-																key={transaction._id}
-																transaction={transaction}
-																account={account}
-																startEditTransaction={startEditTransaction}
-																deleteTransaction={deleteTransaction}
-															/>
-														);
-													})}
-												</ListGroup>
-											</div>
+										</div>
+										
+										<div className="card-body">
+											<ListGroup variant="flush">
+												{monthTransactions.sort((a, b) => new Date(a.transactionDate) - new Date(b.transactionDate)).map(transaction => {
+													const account = accounts.find(acc => acc._id === transaction.transactionAccountId);
+													return (
+														<FinancingItem
+															key={transaction._id}
+															transaction={transaction}
+															account={account}
+															startEditTransaction={startEditTransaction}
+															deleteTransaction={deleteTransaction}
+														/>
+													);
+												})}
+											</ListGroup>
 										</div>
 									</div>
-								)
-							})
-						)}
-					</ListGroup>
-				</div>
+								</div>
+							)
+						})
+					)}
+				</ListGroup>
 			</div>
 			
 			<TransactionModal

@@ -2,7 +2,7 @@ import React from 'react';
 import { Row, Col, Button, ListGroup, Badge } from 'react-bootstrap';
 import { getValueByKey, formatMoneyIntl, formatReadableDate, getDayInfo } from "../../../../helpers/bills";
 
-const FinancingItem = ( { transaction, account, startEditTransaction, deleteTransaction, transactionTypes }) => {
+const FinancingItem = ( { transaction, account, startEditTransaction, deleteTransaction, transactionTypes, openPayModal }) => {
 	return (
 		<ListGroup.Item key={transaction._id}>
 			<Row>
@@ -25,11 +25,16 @@ const FinancingItem = ( { transaction, account, startEditTransaction, deleteTran
 					</div>
 				</Col>
 				<Col xs={3} className="text-right">
-					<div className="text-danger mb-2">{formatMoneyIntl(transaction.transactionAmount)}</div>
+					<div className="text-danger">{formatMoneyIntl(transaction.totalTransactionAmount)}</div>
+					<div className="mb-2" style={{ fontSize: '0.75em', color: '#6c757d' }}>
+						{formatMoneyIntl(transaction.transactionAmount)}
+					</div>
+					
 					{!transaction.paid && (
 						<>
 							<Button variant="outline-primary" size="sm" className="mr-2" onClick={() => startEditTransaction(transaction)}>Edit</Button>
-							<Button variant="outline-danger" size="sm" onClick={() => deleteTransaction(transaction._id)}>Delete</Button>
+							<Button variant="outline-danger" size="sm" className="mr-2" onClick={() => deleteTransaction(transaction._id)}>Delete</Button>
+							<Button variant="outline-success" size="sm" onClick={() => openPayModal(transaction)}>Pay</Button>
 						</>
 					)}
 				</Col>

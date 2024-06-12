@@ -1,7 +1,30 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Modal, Button, Form } from 'react-bootstrap';
 
-const TransactionModal = ({ showModal, handleCloseModal, handleSubmit, form, handleInputChange, filteredFields, isEditing }) => {
+const TransactionModal = ({
+    showModal,
+    handleCloseModal,
+    handleSubmit,
+    form,
+    handleInputChange,
+    filteredFields,
+    isEditing
+  }) => {
+	
+	const calculateTotalTransactionAmount = () => {
+		const amount = parseFloat(form.transactionAmount) || 0;
+		const interestRate = parseFloat(form.interestRate) || 0;
+		const serviceFee = parseFloat(form.serviceFee) || 0;
+		const totalTransactionAmount = amount + (amount * (interestRate / 100)) + serviceFee;
+		handleInputChange({ target: { name: 'totalTransactionAmount', value: totalTransactionAmount } }, { name: 'totalTransactionAmount' });
+	};
+	
+	useEffect(() => {
+		if (form.transactionTypeId === 'financing_out') {
+			calculateTotalTransactionAmount();
+		}
+	}, [form.transactionAmount, form.interestRate, form.serviceFee]);
+	
 	return (
 		<Modal show={showModal} onHide={handleCloseModal}>
 			<Modal.Header closeButton>
