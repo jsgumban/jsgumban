@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Button, Row, Col, Form } from 'react-bootstrap';
 import { ArrowClockwise } from 'react-bootstrap-icons';
 
-const TransactionFilter = ({ filterType, filterValue, onFilterChange }) => {
+const LedgerFilter = ( { filterType, filterValue, onFilterChange }) => {
 	const [filter, setFilter] = useState(filterType);
 	const [value, setValue] = useState(filterValue);
 	
@@ -117,4 +117,4 @@ const TransactionFilter = ({ filterType, filterValue, onFilterChange }) => {
 	);
 };
 
-export default TransactionFilter;
+export default LedgerFilter;

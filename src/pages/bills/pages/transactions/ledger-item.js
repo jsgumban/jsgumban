@@ -2,7 +2,7 @@ import React from 'react';
 import { Row, Col, Button, ListGroup, Badge } from 'react-bootstrap';
 import { getValueByKey, formatMoneyIntl, formatReadableDate, getDayInfo } from "../../../../helpers/bills";
 
-const TransactionItem = ({ transaction, account, startEditTransaction, deleteTransaction, transactionTypes }) => {
+const LedgerItem = ( { transaction, account, startEditTransaction, deleteTransaction, transactionTypes }) => {
 	return (
 		<ListGroup.Item key={transaction._id}>
 			<Row>
@@ -38,4 +38,4 @@ const TransactionItem = ({ transaction, account, startEditTransaction, deleteTra
 	);
 };
 
-export default TransactionItem;
+export default LedgerItem;

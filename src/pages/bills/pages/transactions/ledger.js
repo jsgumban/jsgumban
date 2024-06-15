@@ -4,11 +4,11 @@ import apiClient from "../../../../helpers/api";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import TransactionModal from "../../components/transaction-modal";
 import {convertDate, formatMoneyIntl, getDayInfo, getWeekDateRange} from "../../../../helpers/bills";
-import TransactionItem from "./transaction-item";
-import TransactionFilter from "./transaction-filter";
+import LedgerItem from "./ledger-item";
+import LedgerFilter from "./ledger-filter";
 
 
-const Transactions = (props) => {
+const Ledger = ( props) => {
 	const { transactions: transactionsConfig, transactionTypes, categories, repeatOptions } = props.defaults;
 	const [transactions, setTransactions] = useState([]);
 	const [accounts, setAccounts] = useState([]);
@@ -171,12 +171,12 @@ const Transactions = (props) => {
 	return (
 		<Container className="my-4">
 			<div className="d-flex justify-content-between align-items-center my-4">
-				<h4 className="mb-0">Transactions</h4>
+				<h4 className="mb-0">Ledger</h4>
 				<Button variant="primary" onClick={() => { initializeForm(); setShowModal(true); }}>
 					Add Transaction
 				</Button>
 			</div>
-			<TransactionFilter
+			<LedgerFilter
 				filterType={filterType}
 				filterValue={filterValue}
 				onFilterChange={handleFilterChange}
@@ -223,7 +223,7 @@ const Transactions = (props) => {
 													{weekTransactions.sort((a, b) => new Date(a.transactionDate) - new Date(b.transactionDate)).map(transaction => {
 														const account = accounts.find(acc => acc._id === transaction.transactionAccountId);
 														return (
-															<TransactionItem
+															<LedgerItem
 																key={transaction._id}
 																transaction={transaction}
 																account={account}
@@ -261,7 +261,7 @@ const Transactions = (props) => {
 													{monthTransactions.sort((a, b) => new Date(a.transactionDate) - new Date(b.transactionDate)).map(transaction => {
 														const account = accounts.find(acc => acc._id === transaction.transactionAccountId);
 														return (
-															<TransactionItem
+															<LedgerItem
 																key={transaction._id}
 																transaction={transaction}
 																account={account}
@@ -299,4 +299,4 @@ const getValueByKey = (list, key, value) => {
 	return item ? item.name : 'N/A';
 };
 
-export default Transactions;
+export default Ledger;

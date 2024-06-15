@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import Accounts from "./pages/accounts";
 import apiClient from "../../helpers/api";
-import Transactions from "./pages/transactions/transactions";
+import Ledger from "./pages/transactions/ledger";
 import Payables from "./pages/payables/payables";
 import Login from "./pages/users/login";
 import Register from "./pages/users/register";
@@ -24,9 +24,9 @@ const BillsApp = () => {
 	} else {
 		
 		tabs.push({ id: 'dashboard', title: 'Dashboard', Component: Dashboard });
+		tabs.push({ id: 'ledger', title: 'Ledger', Component: Ledger });
 		tabs.push({ id: 'payables', title: 'Payables', Component: Payables });
 		tabs.push({ id: 'financing', title: 'Financing', Component: Financing });
-		tabs.push({ id: 'transactions', title: 'Transactions', Component: Transactions });
 		tabs.push({ id: 'accounts', title: 'Accounts', Component: Accounts });
 		tabs.push({ id: 'profile', title: 'Profile', Component: Profile });
 	}
