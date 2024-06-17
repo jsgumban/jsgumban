@@ -1,10 +1,13 @@
+// financing-filter.js
 import React, { useState, useEffect } from 'react';
 import { Button, Row, Col, Form } from 'react-bootstrap';
 import { ArrowClockwise } from 'react-bootstrap-icons';
 
-const FinancingFilter = ( { filterType, filterValue, onFilterChange }) => {
+const FinancingFilter = ({ filterType, filterValue, onFilterChange, accounts, statuses, onAccountChange, onStatusChange }) => {
 	const [filter, setFilter] = useState(filterType);
 	const [value, setValue] = useState(filterValue);
+	const [account, setAccount] = useState('all');
+	const [status, setStatus] = useState('all');
 	
 	useEffect(() => {
 		if (filterType === 'month') {
@@ -76,6 +79,16 @@ const FinancingFilter = ( { filterType, filterValue, onFilterChange }) => {
 		onFilterChange(filter, newValue);
 	};
 	
+	const handleAccountChange = (e) => {
+		setAccount(e.target.value);
+		onAccountChange(e.target.value);
+	};
+	
+	const handleStatusChange = (e) => {
+		setStatus(e.target.value);
+		onStatusChange(e.target.value);
+	};
+	
 	return (
 		<Row className="mb-4">
 			<Col xs="auto">
@@ -103,6 +116,18 @@ const FinancingFilter = ( { filterType, filterValue, onFilterChange }) => {
 						return <option key={year} value={year.toString()}>{year}</option>;
 					})}
 					{filter === 'all' && <option value="all">All</option>}
+				</Form.Control>
+			</Col>
+			<Col xs="auto">
+				<Form.Control as="select" value={account} onChange={handleAccountChange}>
+					<option value="all">All Accounts</option>
+					{accounts?.filter(acc => acc.typeId == 'financing').map(acc => <option key={acc._id} value={acc._id}>{acc.name}</option>)}
+				</Form.Control>
+			</Col>
+			<Col xs="auto">
+				<Form.Control as="select" value={status} onChange={handleStatusChange}>
+					<option value="all">All Statuses</option>
+					{statuses?.map(st => <option key={st.value} value={st.value}>{st.label}</option>)}
 				</Form.Control>
 			</Col>
 			<Col xs="auto">

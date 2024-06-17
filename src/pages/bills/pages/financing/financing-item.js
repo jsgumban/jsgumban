@@ -32,8 +32,8 @@ const FinancingItem = ( { transaction, account, startEditTransaction, deleteTran
 					
 					{!transaction.paid && (
 						<>
-							<Button variant="outline-primary" size="sm" className="mr-2" onClick={() => startEditTransaction(transaction)}>Edit</Button>
-							<Button variant="outline-danger" size="sm" className="mr-2" onClick={() => deleteTransaction(transaction._id)}>Delete</Button>
+							{!transaction.transactionInstallmentId && <Button variant="outline-primary" size="sm" className="mr-2" onClick={() => startEditTransaction(transaction)}>Edit</Button>}
+							{!transaction.transactionInstallmentId && <Button variant="outline-danger" size="sm" className="mr-2" onClick={() => deleteTransaction(transaction._id)}>Delete</Button>}
 							<Button variant="outline-success" size="sm" onClick={() => openPayModal(transaction)}>Pay</Button>
 						</>
 					)}
