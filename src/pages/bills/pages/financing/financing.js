@@ -21,6 +21,8 @@ import apiClient from "../../../../helpers/api";
 const Financing = (props) => {
 	const { transactions: transactionsConfig, transactionTypes, categories, repeatOptions } = props.defaults;
 	const [transactions, setTransactions] = useState([]);
+	const [ unfilteredTransactions, setUnfilteredTransactions ] = useState([]);
+	
 	const [accounts, setAccounts] = useState([]);
 	const [form, setForm] = useState({});
 	const [showModal, setShowModal] = useState(false);
@@ -34,7 +36,7 @@ const Financing = (props) => {
 	const filteredTransactionTypes = ["financing_out"];
 	
 	useEffect(() => {
-		fetchTransactions(filteredTransactionTypes, setTransactions, generateInstallmentTransactions);
+		fetchTransactions(filteredTransactionTypes, setTransactions, setUnfilteredTransactions, generateInstallmentTransactions);
 		fetchAccounts(setAccounts);
 		initializeForm(transactionsConfig, setForm);
 	}, []);
@@ -66,6 +68,7 @@ const Financing = (props) => {
 				transactionAmount: transactionAmount,
 				totalTransactionAmount: transactionAmount,
 				transactionNote: `Installment ${i + 1} of ${transaction.installmentMonths}`,
+				relatedTransactionId: `${transaction._id}`,
 				paid: isPaid ? true: false
 			});
 		}
@@ -186,7 +189,7 @@ const Financing = (props) => {
 	return (
 		<Container className="my-4">
 			<div className="d-flex justify-content-between align-items-center my-4">
-				<h4 className="mb-0">Transactions</h4>
+				<h4 className="mb-0">Financing</h4>
 				<Button variant="primary" onClick={() => { initializeForm(transactionsConfig, setForm); setShowModal(true); }}>
 					Add Transaction
 				</Button>
@@ -209,6 +212,7 @@ const Financing = (props) => {
 			<div className="mb-4">
 				<FinancingList
 					groupedTransactions={groupBy(filteredTransactions)}
+					unfilteredTransactions={unfilteredTransactions}
 					groupBy={groupBy}
 					isCurrentPeriod={isCurrentPeriod}
 					transactionTypes={transactionTypes}

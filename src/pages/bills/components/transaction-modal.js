@@ -2,14 +2,14 @@ import React, { useEffect } from 'react';
 import { Modal, Button, Form } from 'react-bootstrap';
 
 const TransactionModal = ({
-	                          showModal,
-	                          handleCloseModal,
-	                          handleSubmit,
-	                          form,
-	                          handleInputChange,
-	                          filteredFields,
-	                          isEditing
-                          }) => {
+  showModal,
+  handleCloseModal,
+  handleSubmit,
+  form,
+  handleInputChange,
+  filteredFields,
+  isEditing
+}) => {
 	
 	const calculateTotalTransactionAmount = () => {
 		const amount = parseFloat(form.transactionAmount) || 0;

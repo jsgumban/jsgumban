@@ -2,7 +2,7 @@
 import apiClient from "../../../../helpers/api";
 import { getWeekDateRange } from "../../../../helpers/bills";
 
-export const fetchTransactions = async (filteredTransactionTypes, setTransactions, generateInstallmentTransactions) => {
+export const fetchTransactions = async (filteredTransactionTypes, setTransactions, setUnfilteredTransactions, generateInstallmentTransactions) => {
 	const response = await apiClient.get('/bills/transactions');
 	const unfilteredTransactions = response.data;
 	const filteredTransactions = response.data.filter(transaction => filteredTransactionTypes.includes(transaction.transactionTypeId));
@@ -15,6 +15,7 @@ export const fetchTransactions = async (filteredTransactionTypes, setTransaction
 	}
 	
 	setTransactions([...filteredTransactions, ...installmentTransactions]);
+	setUnfilteredTransactions([...unfilteredTransactions, ...installmentTransactions])
 };
 
 export const fetchAccounts = async (setAccounts) => {

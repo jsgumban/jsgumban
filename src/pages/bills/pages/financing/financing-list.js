@@ -5,7 +5,7 @@ import FinancingItem from "./financing-item";
 import { buildStyles, CircularProgressbarWithChildren } from "react-circular-progressbar";
 import { formatMoneyIntl } from "../../../../helpers/bills";
 
-const FinancingList = ({ groupedTransactions, groupBy, isCurrentPeriod, transactionTypes, accounts, startEditTransaction, deleteTransaction, openPayModal }) => (
+const FinancingList = ({ groupedTransactions, groupBy, isCurrentPeriod, transactionTypes, accounts, startEditTransaction, deleteTransaction, openPayModal, unfilteredTransactions }) => (
 	<ListGroup variant="flush">
 		{Object.entries(groupedTransactions).map(([period, transactions]) => {
 			const totalDue = transactions.filter(transaction => !transaction.installmentMonths).reduce((total, transaction) => total + transaction.totalTransactionAmount, 0);
@@ -64,6 +64,7 @@ const FinancingList = ({ groupedTransactions, groupBy, isCurrentPeriod, transact
 											deleteTransaction={deleteTransaction}
 											transactionTypes={transactionTypes}
 											openPayModal={openPayModal}
+											unfilteredTransactions={unfilteredTransactions}
 										/>
 									);
 								})}
