@@ -53,7 +53,7 @@ const Financing = (props) => {
 		const startDate = new Date(transaction.transactionDate);
 		for (let i = 0; i < transaction.installmentMonths; i++) {
 			const transactionDate = new Date(startDate);
-			transactionDate.setMonth(transactionDate.getMonth() + (i + 1));
+			transactionDate.setMonth(transactionDate.getMonth() + (i));
 			
 			const transactionAmount = transaction.transactionAmount * (transaction.interestRate / 100);
 			const transactionInstallmentId = `${transaction._id}_installment_${i + 1}`;
