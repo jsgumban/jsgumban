@@ -42,6 +42,10 @@ export const isValidDate = (dateString) => {
 	return true;
 }
 
+export const formatMoneyPHP = (amount) => {
+	return 'P' + amount.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
+};
+
 export const formatMoneyIntl = (amount = 0, locale = 'en-US', currency = 'PHP') => {
 	return new Intl.NumberFormat(locale, {
 		style: 'currency',

@@ -1,6 +1,8 @@
 // financing.js
 import React, { useState, useEffect } from 'react';
 import { Container, Button } from 'react-bootstrap';
+import jsPDF from 'jspdf';
+import 'jspdf-autotable';
 import TransactionModal from "../../components/transaction-modal";
 import FinancingFilter from "./financing-filter";
 import FinancingCard from "./financing-card";
@@ -17,12 +19,12 @@ import {
 	filterTransactions
 } from "./financing-utils";
 import apiClient from "../../../../helpers/api";
+import { formatMoneyIntl, formatMoneyPHP } from "../../../../helpers/bills";
 
 const Financing = (props) => {
 	const { transactions: transactionsConfig, transactionTypes, categories, repeatOptions } = props.defaults;
 	const [transactions, setTransactions] = useState([]);
-	const [ unfilteredTransactions, setUnfilteredTransactions ] = useState([]);
-	
+	const [unfilteredTransactions, setUnfilteredTransactions] = useState([]);
 	const [accounts, setAccounts] = useState([]);
 	const [form, setForm] = useState({});
 	const [showModal, setShowModal] = useState(false);
@@ -67,8 +69,9 @@ const Financing = (props) => {
 				transactionDate: transactionDate.toISOString(),
 				transactionAmount: transactionAmount,
 				totalTransactionAmount: transactionAmount,
-				transactionNote: `Installment ${i + 1} of ${transaction.installmentMonths}`,
+				transactionNote: `Installment ${i + 1} of ${transaction.installmentMonths} (${formatMoneyPHP(transaction.transactionAmount)})`,
 				relatedTransactionId: `${transaction._id}`,
+				interestRate: transaction.interestRate,
 				paid: isPaid ? true: false
 			});
 		}
@@ -127,23 +130,23 @@ const Financing = (props) => {
 			}
 		}
 		
-		fetchTransactions(filteredTransactionTypes, setTransactions, generateInstallmentTransactions);
+		fetchTransactions(filteredTransactionTypes, setTransactions, setUnfilteredTransactions, generateInstallmentTransactions);
 	};
 	
 	const createTransaction = async () => {
 		await apiClient.post('/bills/transactions', form);
-		fetchTransactions(filteredTransactionTypes, setTransactions, generateInstallmentTransactions);
+		fetchTransactions(filteredTransactionTypes, setTransactions, setUnfilteredTransactions, generateInstallmentTransactions);
 	};
 	
 	const updateTransaction = async (id) => {
 		await apiClient.patch(`/bills/transactions/${id}`, form);
-		fetchTransactions(filteredTransactionTypes, setTransactions, generateInstallmentTransactions);
+		fetchTransactions(filteredTransactionTypes, setTransactions, setUnfilteredTransactions, generateInstallmentTransactions);
 	};
 	
 	const deleteTransaction = async (id) => {
 		if (window.confirm("Are you sure you want to delete this transaction?")) {
 			await apiClient.delete(`/bills/transactions/${id}`);
-			fetchTransactions(filteredTransactionTypes, setTransactions, generateInstallmentTransactions);
+			fetchTransactions(filteredTransactionTypes, setTransactions, setUnfilteredTransactions, generateInstallmentTransactions);
 		}
 	};
 	
@@ -165,11 +168,9 @@ const Financing = (props) => {
 	let filteredTransactions = filterTransactions(transactions, filterType, filterValue, filterAccount, filterStatus);
 	
 	// Exclude transactions with installmentMonths from computations
-	// filteredTransactions = filteredTransactions.filter(transaction => !transaction.installmentMonths);
 	const totalDue = filteredTransactions.filter(transaction => !transaction.installmentMonths).reduce((total, transaction) => total + transaction.totalTransactionAmount, 0);
 	const paid = filteredTransactions.filter(transaction => transaction.paid && !transaction.installmentMonths).reduce((total, transaction) => total + transaction.totalTransactionAmount, 0);
 	const remaining = totalDue - paid;
-	
 	
 	const totalEarnings = filteredTransactions.reduce((total, transaction) => total + ((transaction.totalTransactionAmount || 0) - (!transaction.transactionInstallmentId && (transaction.transactionAmount || 0)) - (transaction.serviceFee || 0)), 0);
 	const isCurrentWeek = (start, end) => {
@@ -186,13 +187,94 @@ const Financing = (props) => {
 	const groupBy = filterType === 'month' ? groupByWeek : groupByMonth;
 	const isCurrentPeriod = filterType === 'month' ? isCurrentWeek : isCurrentMonth;
 	
+	const generatePDF = () => {
+		const doc = new jsPDF({ orientation: 'landscape' });
+		const tableColumn = ["Date", "Amount", "Interest Rate", "Total Amount", "Note"];
+		const tableRows = [];
+		
+		const formatMoneyPHP = (amount) => {
+			return 'P' + amount.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
+		};
+		
+		let totalAmountSum = 0;
+		let totalDueSum = 0;
+		
+		// Create a map to keep track of which rows correspond to which transactions
+		const transactionToRowMap = new Map();
+		
+		filteredTransactions.forEach((transaction, index) => {
+			const transactionData = [
+				new Date(transaction.transactionDate).toLocaleDateString(),
+				formatMoneyPHP(transaction.transactionAmount),
+				`${transaction.interestRate}%`,
+				formatMoneyPHP(transaction.totalTransactionAmount),
+				transaction.transactionNote || "-" // Ensure there's a default value for notes
+			];
+			if (!transaction.installmentMonths) {
+				tableRows.push(transactionData);
+				transactionToRowMap.set(tableRows.length - 1, transaction); // Map the row index to the transaction
+				if (!transaction.transactionInstallmentId) {
+					totalAmountSum += transaction.transactionAmount;
+				}
+				totalDueSum += transaction.totalTransactionAmount;
+			}
+		});
+		
+		// Add totals row
+		tableRows.push([
+			'Total',
+			formatMoneyPHP(totalAmountSum),
+			'',
+			formatMoneyPHP(totalDueSum),
+			''
+		]);
+		
+		doc.autoTable({
+			head: [tableColumn],
+			body: tableRows,
+			startY: 30, // Adjust startY to leave space for additional text
+			columnStyles: {
+				1: { cellWidth: 'auto' }, // Adjust width for the Amount column
+				3: { cellWidth: 'auto' }, // Adjust width for the Total Amount column
+				4: { cellWidth: 120 } // Adjust width for the Note column to fit in landscape
+			},
+			didParseCell: (data) => {
+				// Style the last row (totals)
+				if (data.row.index === tableRows.length - 1) {
+					data.cell.styles.fontStyle = 'bold';
+				}
+				// Highlight rows with transactionInstallmentId
+				const transaction = transactionToRowMap.get(data.row.index);
+				if (transaction && transaction.transactionInstallmentId) {
+					data.cell.styles.fillColor = [204, 255, 204]; // Light green background
+				}
+			}
+		});
+		
+		doc.text("STATEMENT OF ACCOUNT", 14, 15);
+		const filteredAccountText = filterAccount === 'all' ? 'all-accounts' : accounts.find(acc => acc._id === filterAccount)?.name || filterAccount;
+		doc.setFontSize(10); // Set font size to 10 for the additional text
+		if (filteredAccountText !== 'all-accounts') {
+			doc.text(`${filteredAccountText} (${filterValue})`, 14, 22);
+		}
+		doc.setFontSize(12); // Reset font size to 12 for the rest of the document
+		
+		const fileName = `${filterValue}-STATEMENT-${filteredAccountText}.pdf`;
+		doc.save(fileName);
+	};
+	
 	return (
 		<Container className="my-4">
 			<div className="d-flex justify-content-between align-items-center my-4">
 				<h4 className="mb-0">Financing</h4>
-				<Button variant="primary" onClick={() => { initializeForm(transactionsConfig, setForm); setShowModal(true); }}>
-					Add Transaction
-				</Button>
+				<div>
+					<Button variant="primary" onClick={() => { initializeForm(transactionsConfig, setForm); setShowModal(true); }}>
+						Add Transaction
+					</Button>
+					<Button variant="secondary" className="ml-2" onClick={generatePDF}>
+						Generate PDF
+					</Button>
+				</div>
 			</div>
 			<FinancingFilter
 				filterType={filterType}
