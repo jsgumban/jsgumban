@@ -3,14 +3,14 @@ import { Row, Col, Button, ListGroup, Badge, Modal, Table } from 'react-bootstra
 import { getValueByKey, formatMoneyIntl, formatReadableDate, getDayInfo } from "../../../../helpers/bills";
 
 const FinancingItem = ({
-   transaction,
-   account,
-   startEditTransaction,
-   deleteTransaction,
-   transactionTypes,
-   openPayModal,
-   unfilteredTransactions
- }) => {
+	                       transaction,
+	                       account,
+	                       startEditTransaction,
+	                       deleteTransaction,
+	                       transactionTypes,
+	                       openPayModal,
+	                       unfilteredTransactions
+                       }) => {
 	const [showModal, setShowModal] = useState(false);
 	
 	const handleClose = () => setShowModal(false);
@@ -18,9 +18,12 @@ const FinancingItem = ({
 	
 	const relatedTransactionItems = unfilteredTransactions.filter(t => t.relatedTransactionId === transaction._id && t.transactionTypeId === 'financing_out');
 	
+	// Determine if the transaction is of type financing_partial
+	const isPartial = transaction.transactionTypeId === 'financing_partial';
+	
 	return (
 		<>
-			<ListGroup.Item key={transaction._id}>
+			<ListGroup.Item key={transaction._id} style={{ backgroundColor: isPartial ? '#f5f5f5' : 'inherit' }}>
 				<Row>
 					<Col xs={3} className="text-center my-auto">
 						<DateInfo transactionDate={transaction.transactionDate} />
@@ -31,6 +34,7 @@ const FinancingItem = ({
 							account={account}
 							transactionTypes={transactionTypes}
 							handleShow={handleShow}
+							isPartial={isPartial}
 						/>
 					</Col>
 					<Col xs={3} className="text-right">
@@ -39,6 +43,7 @@ const FinancingItem = ({
 							startEditTransaction={startEditTransaction}
 							deleteTransaction={deleteTransaction}
 							openPayModal={openPayModal}
+							isPartial={isPartial}
 						/>
 					</Col>
 				</Row>
@@ -62,21 +67,22 @@ const DateInfo = ({ transactionDate }) => (
 	</div>
 );
 
-const TransactionDetails = ({ transaction, account, transactionTypes, handleShow }) => (
+const TransactionDetails = ({ transaction, account, transactionTypes, handleShow, isPartial }) => (
 	<>
 		<div><strong>Date:</strong> {formatReadableDate(transaction.transactionDate)}</div>
 		<div><strong>Type:</strong> {getValueByKey(transactionTypes, transaction.transactionTypeId)}</div>
 		<div><strong>Account:</strong> {account ? account.name : 'N/A'}</div>
 		{transaction.transactionNote && <div><strong>Note:</strong> {transaction.transactionNote}</div>}
-		<div>
-			<strong>Status:</strong>
-			{transaction.paid ? (
-				<Badge variant="success" className="ml-2">Paid</Badge>
-			) : (
-				<Badge variant="warning" className="ml-2">Unpaid</Badge>
-			)}
-			
-		</div>
+		{!isPartial && (
+			<div>
+				<strong>Status:</strong>
+				{transaction.paid ? (
+					<Badge variant="success" className="ml-2">Paid</Badge>
+				) : (
+					<Badge variant="warning" className="ml-2">Unpaid</Badge>
+				)}
+			</div>
+		)}
 		<div>
 			{(transaction.installmentMonths || transaction.transactionInstallmentId) && (
 				<Button variant="info" size="sm" className="mt-2" onClick={handleShow}>View Installments</Button>
@@ -85,7 +91,7 @@ const TransactionDetails = ({ transaction, account, transactionTypes, handleShow
 	</>
 );
 
-const TransactionActions = ({ transaction, startEditTransaction, deleteTransaction, openPayModal }) => (
+const TransactionActions = ({ transaction, startEditTransaction, deleteTransaction, openPayModal, isPartial }) => (
 	<>
 		<div className="text-danger">{formatMoneyIntl(transaction.totalTransactionAmount)}</div>
 		<div className="mb-2" style={{ fontSize: '0.75em', color: '#6c757d' }}>
@@ -99,7 +105,10 @@ const TransactionActions = ({ transaction, startEditTransaction, deleteTransacti
 						<Button variant="outline-danger" size="sm" className="mr-2" onClick={() => deleteTransaction(transaction._id)}>Delete</Button>
 					</>
 				)}
-				<Button variant="outline-success" size="sm" onClick={() => openPayModal(transaction)}>Pay</Button>
+				{ !isPartial &&
+					<Button variant="outline-success" size="sm" onClick={() => openPayModal(transaction)}>Pay</Button>
+				}
+				
 			</>
 		)}
 	</>

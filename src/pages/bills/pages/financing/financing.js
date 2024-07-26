@@ -1,4 +1,3 @@
-// financing.js
 import React, { useState, useEffect } from 'react';
 import { Container, Button } from 'react-bootstrap';
 import jsPDF from 'jspdf';
@@ -35,7 +34,7 @@ const Financing = (props) => {
 	const [filterAccount, setFilterAccount] = useState('all');
 	const [filterStatus, setFilterStatus] = useState('all');
 	
-	const filteredTransactionTypes = ["financing_out"];
+	const filteredTransactionTypes = ["financing_out", "financing_partial"];
 	
 	useEffect(() => {
 		fetchTransactions(filteredTransactionTypes, setTransactions, setUnfilteredTransactions, generateInstallmentTransactions);
@@ -87,11 +86,20 @@ const Financing = (props) => {
 		} else {
 			form[name] = value;
 		}
+		
+		if (form.transactionTypeId === 'financing_partial') {
+			form.totalTransactionAmount = form.transactionAmount;
+		}
+		
 		setForm({ ...form });
 	};
 	
 	const handleSubmit = async (e) => {
 		e.preventDefault();
+		if (form.transactionTypeId === 'financing_partial') {
+			form.totalTransactionAmount = form.transactionAmount;
+		}
+		
 		if (isEditing) {
 			if (form.transactionTypeId === 'financing_in') {
 				await payTransaction();
@@ -167,12 +175,14 @@ const Financing = (props) => {
 	
 	let filteredTransactions = filterTransactions(transactions, filterType, filterValue, filterAccount, filterStatus);
 	
-	// Exclude transactions with installmentMonths from computations
-	const totalDue = filteredTransactions.filter(transaction => !transaction.installmentMonths).reduce((total, transaction) => total + transaction.totalTransactionAmount, 0);
-	const paid = filteredTransactions.filter(transaction => transaction.paid && !transaction.installmentMonths).reduce((total, transaction) => total + transaction.totalTransactionAmount, 0);
+	// Exclude transactions with installmentMonths and financing_partial from computations
+	const filteredTransactionsForComputation = filteredTransactions.filter(transaction => !transaction.installmentMonths && transaction.transactionTypeId !== 'financing_partial');
+	
+	const totalDue = filteredTransactionsForComputation.reduce((total, transaction) => total + transaction.totalTransactionAmount, 0);
+	const paid = filteredTransactionsForComputation.filter(transaction => transaction.paid).reduce((total, transaction) => total + transaction.totalTransactionAmount, 0);
 	const remaining = totalDue - paid;
 	
-	const totalEarnings = filteredTransactions.reduce((total, transaction) => total + ((transaction.totalTransactionAmount || 0) - (!transaction.transactionInstallmentId && (transaction.transactionAmount || 0)) - (transaction.serviceFee || 0)), 0);
+	const totalEarnings = filteredTransactionsForComputation.reduce((total, transaction) => total + ((transaction.totalTransactionAmount || 0) - (!transaction.transactionInstallmentId && (transaction.transactionAmount || 0)) - (transaction.serviceFee || 0)), 0);
 	const isCurrentWeek = (start, end) => {
 		const today = new Date();
 		return today >= new Date(start) && today <= new Date(end);
@@ -187,10 +197,30 @@ const Financing = (props) => {
 	const groupBy = filterType === 'month' ? groupByWeek : groupByMonth;
 	const isCurrentPeriod = filterType === 'month' ? isCurrentWeek : isCurrentMonth;
 	
+	const partialSum = transactions
+		.filter(transaction => transaction.transactionTypeId === 'financing_partial')
+		.filter(transaction => {
+			const transactionDate = new Date(transaction.transactionDate);
+			if (filterType === 'month') {
+				const [year, month] = filterValue.split('-').map(Number);
+				const nextMonth = month === 12 ? 1 : month + 1;
+				const nextYear = month === 12 ? year + 1 : year;
+				return transactionDate.getFullYear() === nextYear && transactionDate.getMonth() + 1 === nextMonth;
+			} else if (filterType === 'year') {
+				const year = parseInt(filterValue, 10);
+				const nextYear = year + 1;
+				return transactionDate.getFullYear() === nextYear;
+			}
+			return false;
+		})
+		.reduce((total, transaction) => total + transaction.transactionAmount, 0);
+	
 	const generatePDF = () => {
 		const doc = new jsPDF({ orientation: 'landscape' });
-		const tableColumn = ["Date", "Amount", "Interest Rate", "Total Amount", "Note"];
+		const tableColumn = ["Date", "Amount", "Interest Rate", "Total Amount", "Account", "Note"];
+		const partialTableColumn = ["Date", "Amount", "Account", "Note"];
 		const tableRows = [];
+		const partialTableRows = [];
 		
 		const formatMoneyPHP = (amount) => {
 			return 'P' + amount.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
@@ -198,66 +228,135 @@ const Financing = (props) => {
 		
 		let totalAmountSum = 0;
 		let totalDueSum = 0;
+		let totalPartialSum = 0;
 		
-		// Create a map to keep track of which rows correspond to which transactions
-		const transactionToRowMap = new Map();
+		// Filter transactions for the main table and sort by date
+		const mainTransactions = filteredTransactions
+			.filter(transaction => !transaction.installmentMonths)
+			.sort((a, b) => new Date(a.transactionDate) - new Date(b.transactionDate));
 		
-		filteredTransactions.forEach((transaction, index) => {
+		mainTransactions.forEach((transaction, index) => {
+			const account = accounts.find(acc => acc._id === transaction.transactionAccountId);
+			const accountName = account ? account.name : 'N/A';
 			const transactionData = [
 				new Date(transaction.transactionDate).toLocaleDateString(),
 				formatMoneyPHP(transaction.transactionAmount),
 				`${transaction.interestRate}%`,
 				formatMoneyPHP(transaction.totalTransactionAmount),
+				accountName,
 				transaction.transactionNote || "-" // Ensure there's a default value for notes
 			];
-			if (!transaction.installmentMonths) {
-				tableRows.push(transactionData);
-				transactionToRowMap.set(tableRows.length - 1, transaction); // Map the row index to the transaction
-				if (!transaction.transactionInstallmentId) {
-					totalAmountSum += transaction.transactionAmount;
-				}
-				totalDueSum += transaction.totalTransactionAmount;
+			tableRows.push(transactionData);
+			if (!transaction.transactionInstallmentId) {
+				totalAmountSum += transaction.transactionAmount;
 			}
+			totalDueSum += transaction.totalTransactionAmount;
 		});
 		
-		// Add totals row
+		// Add totals row for main transactions
 		tableRows.push([
 			'Total',
 			formatMoneyPHP(totalAmountSum),
 			'',
 			formatMoneyPHP(totalDueSum),
+			'',
 			''
 		]);
+		
+		// Filter partial transactions based on the selected filter type, account, and sort by date
+		const partialTransactions = transactions
+			.filter(transaction => transaction.transactionTypeId === 'financing_partial' &&
+				(filterAccount === 'all' || transaction.transactionAccountId === filterAccount))
+			.sort((a, b) => new Date(a.transactionDate) - new Date(b.transactionDate));
+		
+		partialTransactions.forEach(transaction => {
+			const account = accounts.find(acc => acc._id === transaction.transactionAccountId);
+			const accountName = account ? account.name : 'N/A';
+			const transactionData = [
+				new Date(transaction.transactionDate).toLocaleDateString(),
+				formatMoneyPHP(transaction.transactionAmount),
+				accountName,
+				transaction.transactionNote || "-" // Ensure there's a default value for notes
+			];
+			partialTableRows.push(transactionData);
+			totalPartialSum += transaction.transactionAmount;
+		});
+		
+		
+		// Add the main transactions table
+		const headerX = 14;
+		doc.text("STATEMENT OF ACCOUNT", headerX, 15);
+		const filteredAccountText = filterAccount === 'all' ? 'all-accounts' : accounts.find(acc => acc._id === filterAccount)?.name || filterAccount;
+		const accountMonthText = `${filteredAccountText} (${filterValue})`;
+		doc.setFontSize(10);
+		doc.text(accountMonthText, headerX, 22);
+		doc.setFontSize(12); // Reset font size to 12 for the rest of the document
 		
 		doc.autoTable({
 			head: [tableColumn],
 			body: tableRows,
-			startY: 30, // Adjust startY to leave space for additional text
+			startY: 30,
 			columnStyles: {
-				1: { cellWidth: 'auto' }, // Adjust width for the Amount column
-				3: { cellWidth: 'auto' }, // Adjust width for the Total Amount column
-				4: { cellWidth: 120 } // Adjust width for the Note column to fit in landscape
+				0: { cellWidth: 'auto' },
+				1: { cellWidth: 'auto' },
+				2: { cellWidth: 'auto' },
+				3: { cellWidth: 'auto' },
+				4: { cellWidth: 'auto' },
+				5: { cellWidth: 'auto' }
 			},
 			didParseCell: (data) => {
-				// Style the last row (totals)
 				if (data.row.index === tableRows.length - 1) {
 					data.cell.styles.fontStyle = 'bold';
-				}
-				// Highlight rows with transactionInstallmentId
-				const transaction = transactionToRowMap.get(data.row.index);
-				if (transaction && transaction.transactionInstallmentId) {
-					data.cell.styles.fillColor = [204, 255, 204]; // Light green background
 				}
 			}
 		});
 		
-		doc.text("STATEMENT OF ACCOUNT", 14, 15);
-		const filteredAccountText = filterAccount === 'all' ? 'all-accounts' : accounts.find(acc => acc._id === filterAccount)?.name || filterAccount;
-		doc.setFontSize(10); // Set font size to 10 for the additional text
-		if (filteredAccountText !== 'all-accounts') {
-			doc.text(`${filteredAccountText} (${filterValue})`, 14, 22);
+		partialTableRows.push([
+			'Total',
+			formatMoneyPHP(totalPartialSum),
+			'',
+			''
+		]);
+		
+		// Add the partial transactions table
+		if (partialTableRows.length > 0) {
+			doc.text("PARTIAL TRANSACTIONS", headerX, doc.lastAutoTable.finalY + 15);
+			doc.autoTable({
+				head: [partialTableColumn],
+				body: partialTableRows,
+				startY: doc.lastAutoTable.finalY + 20,
+				columnStyles: {
+					0: { cellWidth: 'auto' },
+					1: { cellWidth: 'auto', halign: 'left' }, // Align the amount column to the right
+					2: { cellWidth: 'auto' },
+					3: { cellWidth: 'auto' }
+				},
+				didParseCell: (data) => {
+					if (data.row.index === partialTableRows.length - 1) {
+						data.cell.styles.fontStyle = 'bold';
+					}
+				}
+			});
 		}
-		doc.setFontSize(12); // Reset font size to 12 for the rest of the document
+		
+		// Summary Section
+		const remainingBalance = totalDueSum - totalPartialSum;
+		const summaryY = doc.lastAutoTable.finalY + 20;
+		doc.text("SUMMARY", headerX, summaryY);
+		doc.autoTable({
+			head: [],
+			body: [
+				['Total Amount:', formatMoneyPHP(totalDueSum)],
+				['Partial Amount Paid:', formatMoneyPHP(totalPartialSum)],
+				['Remaining Balance:', formatMoneyPHP(remainingBalance)]
+			],
+			startY: summaryY + 5,
+			columnStyles: {
+				0: { cellWidth: 'auto', fontStyle: 'bold' },
+				1: { cellWidth: 'auto', halign: 'right' }
+			},
+			styles: { tableLineWidth: 0 } // Remove table borders
+		});
 		
 		const fileName = `${filterValue}-STATEMENT-${filteredAccountText}.pdf`;
 		doc.save(fileName);
@@ -290,6 +389,11 @@ const Financing = (props) => {
 				totalDue={totalDue}
 				paid={paid}
 				remaining={remaining}
+				partialSum={partialSum}
+				transactions={transactions}
+				filterType={filterType}
+				filterValue={filterValue}
+				filterAccount={filterAccount}
 			/>
 			<div className="mb-4">
 				<FinancingList
@@ -313,6 +417,7 @@ const Financing = (props) => {
 				handleInputChange={handleInputChange}
 				filteredFields={filteredFields}
 				isEditing={isEditing}
+				modalType="financing"
 			/>
 		</Container>
 	);

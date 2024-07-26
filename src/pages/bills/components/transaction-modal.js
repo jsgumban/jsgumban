@@ -8,9 +8,24 @@ const TransactionModal = ({
   form,
   handleInputChange,
   filteredFields,
-  isEditing
+  isEditing,
+	modalType,
+  accountType // Destructure the accountType prop
 }) => {
+	// Function to filter options based on typeId
+	const filterOptionsByType = (options, name) => {
+		if (name == 'transactionAccountId') {
+			return options.filter(option => option.typeId == 'financing');
+		}
+		
+		if (modalType == 'financing') {
+			return options.filter(option =>  option.id == 'financing_in' || option.id == 'financing_out' || option.id == 'financing_partial');
+		}
+		
+		return options;
+	};
 	
+	// Calculate total transaction amount based on form data
 	const calculateTotalTransactionAmount = () => {
 		const amount = parseFloat(form.transactionAmount) || 0;
 		const interestRate = parseFloat(form.interestRate) || 0;
@@ -51,7 +66,7 @@ const TransactionModal = ({
 									onChange={handleInputChange}
 								>
 									<option value="">Select {field.placeholder}</option>
-									{(field.source || []).map(option => (
+									{(filterOptionsByType(field.source, field.name) || []).map(option => (
 										<option key={option.id} value={option.id}>{option.name}</option>
 									))}
 								</Form.Control>
