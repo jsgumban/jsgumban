@@ -15,11 +15,12 @@ const TransactionModal = ({
 	// Function to filter options based on typeId
 	const filterOptionsByType = (options, name) => {
 		if (modalType == 'financing') {
-			return options.filter(option =>  option.id == 'financing_in' || option.id == 'financing_out' || option.id == 'financing_partial');
 			
 			if (name == 'transactionAccountId') {
 				return options.filter(option => option.typeId == 'financing');
 			}
+			
+			return options.filter(option =>  option.id == 'financing_in' || option.id == 'financing_out' || option.id == 'financing_partial');
 		}
 		
 		return options;

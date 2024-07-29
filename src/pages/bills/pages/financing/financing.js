@@ -247,9 +247,7 @@ const Financing = (props) => {
 				transaction.transactionNote || "-" // Ensure there's a default value for notes
 			];
 			tableRows.push(transactionData);
-			if (!transaction.transactionInstallmentId) {
-				totalAmountSum += transaction.transactionAmount;
-			}
+			totalAmountSum += transaction.transactionAmount;
 			totalDueSum += transaction.totalTransactionAmount;
 		});
 		
