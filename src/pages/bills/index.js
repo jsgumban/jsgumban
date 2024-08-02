@@ -23,10 +23,10 @@ const BillsApp = () => {
 		tabs.push({ id: 'register', title: 'Register', Component: Register });
 	} else {
 		
-		tabs.push({ id: 'dashboard', title: 'Dashboard', Component: Dashboard });
-		tabs.push({ id: 'ledger', title: 'Ledger', Component: Ledger });
+		// tabs.push({ id: 'dashboard', title: 'Dashboard', Component: Dashboard });
 		tabs.push({ id: 'payables', title: 'Payables', Component: Payables });
 		tabs.push({ id: 'financing', title: 'Financing', Component: Financing });
+		tabs.push({ id: 'ledger', title: 'Ledger', Component: Ledger });
 		tabs.push({ id: 'accounts', title: 'Accounts', Component: Accounts });
 		tabs.push({ id: 'profile', title: 'Profile', Component: Profile });
 	}

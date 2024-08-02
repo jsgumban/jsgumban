@@ -1,3 +1,4 @@
+// FinancingCard.js
 import React from 'react';
 import { Card, Row, Col } from 'react-bootstrap';
 import { formatMoneyIntl } from "../../../../helpers/bills";
@@ -31,6 +32,7 @@ const FinancingCard = ({ totalEarnings, totalDue, paid, transactions, filterType
 	};
 	
 	const partialSum = getPartialSum();
+	const mainTransactions = transactions.filter(transaction => transaction.transactionTypeId !== 'financing_partial');
 	const remaining = totalDue - paid - partialSum;
 	
 	return (

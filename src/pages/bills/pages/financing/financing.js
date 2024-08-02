@@ -1,3 +1,4 @@
+// financing.js
 import React, { useState, useEffect } from 'react';
 import { Container, Button } from 'react-bootstrap';
 import jsPDF from 'jspdf';
@@ -33,6 +34,7 @@ const Financing = (props) => {
 	const [filterValue, setFilterValue] = useState(`${new Date().getFullYear()}-${String(new Date().getMonth() + 1).padStart(2, '0')}`);
 	const [filterAccount, setFilterAccount] = useState('all');
 	const [filterStatus, setFilterStatus] = useState('all');
+	const [showPartial, setShowPartial] = useState(false);
 	
 	const filteredTransactionTypes = ["financing_out", "financing_partial"];
 	
@@ -175,8 +177,13 @@ const Financing = (props) => {
 	
 	let filteredTransactions = filterTransactions(transactions, filterType, filterValue, filterAccount, filterStatus);
 	
-	// Exclude transactions with installmentMonths and financing_partial from computations
-	const filteredTransactionsForComputation = filteredTransactions.filter(transaction => !transaction.installmentMonths && transaction.transactionTypeId !== 'financing_partial');
+	// Filter out financing_partial transactions if showPartial is false
+	if (!showPartial) {
+		filteredTransactions = filteredTransactions.filter(transaction => transaction.transactionTypeId !== 'financing_partial');
+	}
+	
+	// Exclude transactions with installmentMonths from computations
+	const filteredTransactionsForComputation = filteredTransactions.filter(transaction => !transaction.installmentMonths);
 	
 	const totalDue = filteredTransactionsForComputation.reduce((total, transaction) => total + transaction.totalTransactionAmount, 0);
 	const paid = filteredTransactionsForComputation.filter(transaction => transaction.paid).reduce((total, transaction) => total + transaction.totalTransactionAmount, 0);
@@ -232,10 +239,10 @@ const Financing = (props) => {
 		
 		// Filter transactions for the main table and sort by date
 		const mainTransactions = filteredTransactions
-			.filter(transaction => !transaction.installmentMonths)
+			.filter(transaction => !transaction.installmentMonths && transaction.transactionTypeId !== 'financing_partial')
 			.sort((a, b) => new Date(a.transactionDate) - new Date(b.transactionDate));
 		
-		mainTransactions.forEach((transaction, index) => {
+		mainTransactions.forEach((transaction) => {
 			const account = accounts.find(acc => acc._id === transaction.transactionAccountId);
 			const accountName = account ? account.name : 'N/A';
 			const transactionData = [
@@ -261,11 +268,26 @@ const Financing = (props) => {
 			''
 		]);
 		
-		// Filter partial transactions based on the selected filter type, account, and sort by date
-		const partialTransactions = transactions
-			.filter(transaction => transaction.transactionTypeId === 'financing_partial' &&
-				(filterAccount === 'all' || transaction.transactionAccountId === filterAccount))
-			.sort((a, b) => new Date(a.transactionDate) - new Date(b.transactionDate));
+		// Filter partial transactions based on the next month and sort by date
+		let partialTransactions = transactions
+			.filter(transaction => transaction.transactionTypeId === 'financing_partial')
+			.filter(transaction => {
+				const transactionDate = new Date(transaction.transactionDate);
+				const currentDate = new Date(filterValue);
+				const nextMonth = currentDate.getMonth() === 11 ? 0 : currentDate.getMonth() + 1;
+				const nextYear = currentDate.getMonth() === 11 ? currentDate.getFullYear() + 1 : currentDate.getFullYear();
+				return transactionDate.getMonth() === nextMonth && transactionDate.getFullYear() === nextYear;
+			});
+		
+		if (filterAccount !== 'all') {
+			partialTransactions = partialTransactions.filter(transaction => transaction.transactionAccountId === filterAccount);
+		}
+		
+		if (filterStatus !== 'all') {
+			partialTransactions = partialTransactions.filter(transaction => transaction.paid.toString() === filterStatus);
+		}
+		
+		partialTransactions.sort((a, b) => new Date(a.transactionDate) - new Date(b.transactionDate));
 		
 		partialTransactions.forEach(transaction => {
 			const account = accounts.find(acc => acc._id === transaction.transactionAccountId);
@@ -279,7 +301,6 @@ const Financing = (props) => {
 			partialTableRows.push(transactionData);
 			totalPartialSum += transaction.transactionAmount;
 		});
-		
 		
 		// Add the main transactions table
 		const headerX = 14;
@@ -381,6 +402,8 @@ const Financing = (props) => {
 				statuses={[{ value: 'true', label: 'Paid' }, { value: 'false', label: 'Unpaid' }]}
 				onAccountChange={(account) => handleAccountChange(setFilterAccount, account)}
 				onStatusChange={(status) => handleStatusChange(setFilterStatus, status)}
+				showPartial={showPartial}
+				onShowPartialChange={setShowPartial}
 			/>
 			<FinancingCard
 				totalEarnings={totalEarnings}

@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { Button, Row, Col, Form } from 'react-bootstrap';
 import { ArrowClockwise } from 'react-bootstrap-icons';
 
-const FinancingFilter = ({ filterType, filterValue, onFilterChange, accounts, statuses, onAccountChange, onStatusChange }) => {
+const FinancingFilter = ({ filterType, filterValue, onFilterChange, accounts, statuses, onAccountChange, onStatusChange, showPartial, onShowPartialChange }) => {
 	const [filter, setFilter] = useState(filterType);
 	const [value, setValue] = useState(filterValue);
 	const [account, setAccount] = useState('all');
@@ -89,6 +89,10 @@ const FinancingFilter = ({ filterType, filterValue, onFilterChange, accounts, st
 		onStatusChange(e.target.value);
 	};
 	
+	const handleShowPartialChange = (e) => {
+		onShowPartialChange(e.target.value === 'show');
+	};
+	
 	return (
 		<Row className="mb-4">
 			<Col xs="auto">
@@ -128,6 +132,12 @@ const FinancingFilter = ({ filterType, filterValue, onFilterChange, accounts, st
 				<Form.Control as="select" value={status} onChange={handleStatusChange}>
 					<option value="all">All Statuses</option>
 					{statuses?.map(st => <option key={st.value} value={st.value}>{st.label}</option>)}
+				</Form.Control>
+			</Col>
+			<Col xs="auto">
+				<Form.Control as="select" value={showPartial ? 'show' : 'hide'} onChange={handleShowPartialChange}>
+					<option value="show">Show Partial Transactions</option>
+					<option value="hide">Hide Partial Transactions</option>
 				</Form.Control>
 			</Col>
 			<Col xs="auto">

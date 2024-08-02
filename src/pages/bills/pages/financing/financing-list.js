@@ -8,8 +8,11 @@ import { formatMoneyIntl } from "../../../../helpers/bills";
 const FinancingList = ({ groupedTransactions, groupBy, isCurrentPeriod, transactionTypes, accounts, startEditTransaction, deleteTransaction, openPayModal, unfilteredTransactions }) => (
 	<ListGroup variant="flush">
 		{Object.entries(groupedTransactions).map(([period, transactions]) => {
-			const totalDue = transactions.filter(transaction => !transaction.installmentMonths).reduce((total, transaction) => total + transaction.totalTransactionAmount, 0);
-			const paid = transactions.filter(transaction => transaction.paid).reduce((total, transaction) => total + transaction.totalTransactionAmount, 0);
+			// Filter out financing_partial transactions
+			const mainTransactions = transactions.filter(transaction => transaction.transactionTypeId !== 'financing_partial');
+			
+			const totalDue = mainTransactions.filter(transaction => !transaction.installmentMonths).reduce((total, transaction) => total + transaction.totalTransactionAmount, 0);
+			const paid = mainTransactions.filter(transaction => transaction.paid).reduce((total, transaction) => total + transaction.totalTransactionAmount, 0);
 			const remaining = totalDue - paid;
 			
 			const progress = totalDue ? (paid / totalDue) * 100 : 0;

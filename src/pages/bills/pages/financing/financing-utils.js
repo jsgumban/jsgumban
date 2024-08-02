@@ -92,7 +92,11 @@ export const filterTransactions = (transactions, filterType, filterValue, filter
 	}
 	
 	if (filterStatus !== 'all') {
-		filteredTransactions = filteredTransactions.filter(transaction => transaction.paid.toString() === filterStatus);
+		if (filterStatus === 'financing_partial') {
+			filteredTransactions = filteredTransactions.filter(transaction => transaction.transactionTypeId === 'financing_partial');
+		} else {
+			filteredTransactions = filteredTransactions.filter(transaction => transaction.paid.toString() === filterStatus);
+		}
 	}
 	
 	return filteredTransactions.sort((a, b) => new Date(a.transactionDate) - new Date(b.transactionDate));
