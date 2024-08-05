@@ -350,12 +350,13 @@ const Payables = (props) => {
 						const highlightClass = getHighlightClass(account);
 						return (
 							<ListGroup.Item key={account.accountNumber} className={highlightClass}>
-								<div><strong>{account.name}</strong></div>
-								<div><strong>Due Date:</strong> {account.dueDate.toLocaleDateString()}</div>
+								<div style={{ fontSize: '0.64em' }}><strong>{account ? `${account.name} (${account.accountNumber.slice(-4)})` : 'N/A'}</strong></div>
+								<div style={{ fontSize: '0.65em' }}><strong>Due Date:</strong> {account.dueDate.toLocaleDateString()}</div>
 							</ListGroup.Item>
 						);
 					})}
 				</ListGroup>
+			
 			</div>
 		);
 	};
