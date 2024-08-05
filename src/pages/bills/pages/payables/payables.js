@@ -1,14 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import {Card, Container, Row, Col, ListGroup, Button, ProgressBar} from 'react-bootstrap';
+import { Card, Container, Row, Col, ListGroup, Button, ProgressBar } from 'react-bootstrap';
 import apiClient from "../../../../helpers/api";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import TransactionModal from "../../components/transaction-modal";
 import PayableTransactionFilter from "./payable-transaction-filter";
 import { getBillingCycle, getDueDate, formatMoneyIntl, getWeekDateRange } from "../../../../helpers/bills";
 import PayableTransactionItem from "./payable-transaction-item";
-import {CircularProgressbar, buildStyles, CircularProgressbarWithChildren} from 'react-circular-progressbar';
+import { CircularProgressbar, buildStyles, CircularProgressbarWithChildren } from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css';
-import { FaCheckCircle, FaExclamationCircle } from 'react-icons/fa'; // Import icons from react-icons
+import { FaCheckCircle, FaExclamationCircle } from 'react-icons/fa';
+
 const Payables = (props) => {
 	const { transactions: transactionsConfig, transactionTypes, categories, repeatOptions } = props.defaults;
 	const [transactions, setTransactions] = useState([]);
@@ -306,6 +307,60 @@ const Payables = (props) => {
 		});
 	};
 	
+	const renderCreditCardAccounts = () => {
+		const creditCardAccounts = accounts.filter(account => account.typeId === 'credit_card');
+		
+		const sortedCreditCardAccounts = creditCardAccounts.map(account => {
+			const currentYear = new Date().getFullYear();
+			const currentMonth = new Date().getMonth();
+			const statementDate = new Date(currentYear, currentMonth, account.billGenerationDate);
+			const dueDate = new Date(currentYear, currentMonth, account.billDueDate);
+			
+			// Check if the statementDate is in the future; if so, use the previous month
+			if (statementDate > new Date()) {
+				statementDate.setMonth(statementDate.getMonth() - 1);
+			}
+			
+			return { ...account, dueDate };
+		}).sort((a, b) => a.dueDate - b.dueDate);
+		
+		const highlightedAccounts = filteredTransactions.map(transaction => transaction.transactionAccountId);
+		
+		const getHighlightClass = (account) => {
+			if (highlightedAccounts.includes(account._id)) {
+				const transaction = filteredTransactions.find(t => t.transactionAccountId === account._id);
+				const currentDate = new Date();
+				const daysUntilDue = Math.ceil((account.dueDate - currentDate) / (1000 * 60 * 60 * 24));
+				
+				if (transaction.paid) {
+					return 'highlight-green'; // Paid transactions
+				} else if (daysUntilDue <= 3) {
+					return 'highlight-red'; // Almost due transactions (within 3 days)
+				} else {
+					return 'highlight-yellow'; // Regular highlighted transactions
+				}
+			}
+			return '';
+		};
+		
+		return (
+			<div>
+				<ListGroup>
+					{sortedCreditCardAccounts.map(account => {
+						const highlightClass = getHighlightClass(account);
+						return (
+							<ListGroup.Item key={account.accountNumber} className={highlightClass}>
+								<div><strong>{account.name}</strong></div>
+								<div><strong>Due Date:</strong> {account.dueDate.toLocaleDateString()}</div>
+							</ListGroup.Item>
+						);
+					})}
+				</ListGroup>
+			</div>
+		);
+	};
+	
+	
 	return (
 		<Container className="my-4">
 			<div className="d-flex justify-content-between align-items-center my-4">
@@ -336,19 +391,38 @@ const Payables = (props) => {
 						</div>
 					</div>
 				</div>
-				<div>
+				{filterType === 'month' ? (
+					<Row>
+						<Col md={3}>
+							{renderCreditCardAccounts()}
+						</Col>
+						<Col md={9}>
+							<ListGroup variant="flush">
+								{filteredTransactions.length === 0 ? (
+									<ListGroup.Item>
+										<div className="text-muted">No payables for this period.</div>
+									</ListGroup.Item>
+								) : (
+									renderGroupedTransactions(groupByWeek(filteredTransactions), isCurrentWeek)
+								)}
+							</ListGroup>
+						</Col>
+					</Row>
+				) : (
 					<ListGroup variant="flush">
 						{filteredTransactions.length === 0 ? (
 							<ListGroup.Item>
 								<div className="text-muted">No payables for this period.</div>
 							</ListGroup.Item>
-						) : filterType === 'month' ? (
-							renderGroupedTransactions(groupByWeek(filteredTransactions), isCurrentWeek)
 						) : (
-							renderGroupedTransactions(groupByMonth(filteredTransactions), isCurrentMonth)
+							filterType === 'year' ? (
+								renderGroupedTransactions(groupByMonth(filteredTransactions), isCurrentMonth)
+							) : (
+								renderGroupedTransactions(groupByWeek(filteredTransactions), isCurrentWeek)
+							)
 						)}
 					</ListGroup>
-				</div>
+				)}
 			</div>
 			
 			<TransactionModal
