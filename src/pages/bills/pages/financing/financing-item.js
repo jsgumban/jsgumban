@@ -3,14 +3,14 @@ import { Row, Col, Button, ListGroup, Badge, Modal, Table } from 'react-bootstra
 import { getValueByKey, formatMoneyIntl, formatReadableDate, getDayInfo } from "../../../../helpers/bills";
 
 const FinancingItem = ({
-	                       transaction,
-	                       account,
-	                       startEditTransaction,
-	                       deleteTransaction,
-	                       transactionTypes,
-	                       openPayModal,
-	                       unfilteredTransactions
-                       }) => {
+   transaction,
+   account,
+   startEditTransaction,
+   deleteTransaction,
+   transactionTypes,
+   openPayModal,
+   unfilteredTransactions
+ }) => {
 	const [showModal, setShowModal] = useState(false);
 	
 	const handleClose = () => setShowModal(false);

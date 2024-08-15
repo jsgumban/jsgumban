@@ -54,13 +54,42 @@ const Financing = (props) => {
 	const generateInstallmentTransactions = (transaction, unfilteredTransactions) => {
 		const transactions = [];
 		const startDate = new Date(transaction.transactionDate);
+		
 		for (let i = 0; i < transaction.installmentMonths; i++) {
 			const transactionDate = new Date(startDate);
-			transactionDate.setMonth(transactionDate.getMonth() + (i));
+			transactionDate.setMonth(transactionDate.getMonth() + i);
 			
-			const transactionAmount = transaction.transactionAmount * (transaction.interestRate / 100);
+			// Ensure that transactionAmount, interestRate, and installmentMonths are numbers
+			const transactionAmount = parseFloat(transaction.transactionAmount) || 0;
+			const interestRate = parseFloat(transaction.interestRate) || 0;
+			const installmentMonths = parseInt(transaction.installmentMonths) || 1;
+			
+			// Debugging logs
+			console.log('Installment:', i + 1);
+			console.log('transactionAmount:', transactionAmount);
+			console.log('interestRate:', interestRate);
+			console.log('installmentMonths:', installmentMonths);
+			
+			// Calculate the principal amount per month
+			const principalAmountPerMonth = transaction.includePrincipalAmountInInstallment
+				? transactionAmount / installmentMonths
+				: 0;
+			
+			// Calculate the interest amount based on the full transaction amount
+			const interestAmount = transactionAmount * (interestRate / 100);
+			
+			// The total transaction amount for each installment includes both principal (if applicable) and interest
+			const totalTransactionAmount = principalAmountPerMonth + interestAmount;
+			
+			// Debugging log for totalTransactionAmount
+			console.log('principalAmountPerMonth:', principalAmountPerMonth);
+			console.log('interestAmount:', interestAmount);
+			console.log('totalTransactionAmount:', totalTransactionAmount);
+			
 			const transactionInstallmentId = `${transaction._id}_installment_${i + 1}`;
-			const isPaid = unfilteredTransactions.find(unfilteredTransactions => unfilteredTransactions.transactionInstallmentId == transactionInstallmentId);
+			const isPaid = unfilteredTransactions.find(
+				unfilteredTransaction => unfilteredTransaction.transactionInstallmentId === transactionInstallmentId
+			);
 			
 			transactions.push({
 				_id: `${transaction._id}`,
@@ -68,14 +97,16 @@ const Financing = (props) => {
 				transactionTypeId: transaction.transactionTypeId,
 				transactionAccountId: transaction.transactionAccountId,
 				transactionDate: transactionDate.toISOString(),
-				transactionAmount: transactionAmount,
-				totalTransactionAmount: transactionAmount,
-				transactionNote: `Installment ${i + 1} of ${transaction.installmentMonths} (${formatMoneyPHP(transaction.transactionAmount)})`,
+				transactionAmount: totalTransactionAmount,  // Ensure this is a number
+				totalTransactionAmount: totalTransactionAmount,  // Ensure this is a number
+				transactionNote: `Installment ${i + 1} of ${transaction.installmentMonths} (${formatMoneyPHP(transactionAmount)})`,
 				relatedTransactionId: `${transaction._id}`,
 				interestRate: transaction.interestRate,
-				paid: isPaid ? true: false
+				includePrincipalAmountInInstallment: transaction.includePrincipalAmountInInstallment,
+				paid: isPaid ? true : false
 			});
 		}
+		
 		return transactions;
 	};
 	
@@ -189,7 +220,41 @@ const Financing = (props) => {
 	const paid = filteredTransactionsForComputation.filter(transaction => transaction.paid).reduce((total, transaction) => total + transaction.totalTransactionAmount, 0);
 	const remaining = totalDue - paid;
 	
-	const totalEarnings = filteredTransactionsForComputation.reduce((total, transaction) => total + ((transaction.totalTransactionAmount || 0) - (!transaction.transactionInstallmentId && (transaction.transactionAmount || 0)) - (transaction.serviceFee || 0)), 0);
+	const totalEarnings = filteredTransactionsForComputation.reduce((total, transaction) => {
+		const transactionAmount = parseFloat(transaction.transactionAmount) || 0;
+		const interestRate = parseFloat(transaction.interestRate) || 0;
+		const installmentMonths = parseInt(transaction.installmentMonths) || 1;
+		
+		// Calculate the interest amount for the current transaction
+		const interestAmount = transactionAmount * (interestRate / 100);
+		
+		if (transaction.includePrincipalAmountInInstallment && transaction.relatedTransactionId) {
+			// Find the main transaction using relatedTransactionId
+			const mainTransaction = unfilteredTransactions.find(t => t._id === transaction.relatedTransactionId);
+			console.log('mainTransactionX: ', mainTransaction);
+			
+			if (mainTransaction) {
+				// Calculate interest from the main transaction's amount
+				const mainAmount = parseFloat(mainTransaction.transactionAmount) || 0;
+				const mainInterestAmount = mainAmount * (parseFloat(mainTransaction.interestRate) / 100);
+				
+				return total + mainInterestAmount;
+			} else {
+				console.error('Main transaction not found for relatedTransactionId:', transaction.relatedTransactionId);
+				return total;
+			}
+		} else {
+			// If the principal is not included, use the regular totalTransactionAmount logic
+			const earningsFromTransaction = (transaction.totalTransactionAmount || 0) - (!transaction.transactionInstallmentId && transactionAmount) - (transaction.serviceFee || 0);
+			
+			console.log('Earnings from transaction:', transaction._id, 'is:', earningsFromTransaction);
+			
+			return total + earningsFromTransaction;
+		}
+	}, 0);
+	
+	console.log('Total earnings:', totalEarnings);
+	
 	const isCurrentWeek = (start, end) => {
 		const today = new Date();
 		return today >= new Date(start) && today <= new Date(end);

@@ -9,44 +9,70 @@ const TransactionModal = ({
   handleInputChange,
   filteredFields,
   isEditing,
-	modalType,
+  modalType,
   accountType // Destructure the accountType prop
 }) => {
 	// Function to filter options based on typeId
 	const filterOptionsByType = (options, name) => {
-		if (modalType == 'financing') {
-			
-			if (name == 'transactionAccountId') {
-				return options.filter(option => option.typeId == 'financing');
+		if (modalType === 'financing') {
+			if (name === 'transactionAccountId') {
+				return options.filter(option => option.typeId === 'financing');
 			}
-			
-			return options.filter(option =>  option.id == 'financing_in' || option.id == 'financing_out' || option.id == 'financing_partial');
+			return options.filter(option => option.id === 'financing_in' || option.id === 'financing_out' || option.id === 'financing_partial');
 		}
-		
 		return options;
 	};
 	
-	// Calculate total transaction amount based on form data
+	// Function to handle non-negative number inputs
+	const handleNonNegativeInput = (e, field) => {
+		let value = parseFloat(e.target.value);
+		if (isNaN(value) || value < 0) {
+			value = 0; // If the value is negative or NaN, set it to zero
+		}
+		handleInputChange({ target: { name: field.name, value } }, field);
+	};
+	
 	const calculateTotalTransactionAmount = () => {
 		const amount = parseFloat(form.transactionAmount) || 0;
 		const interestRate = parseFloat(form.interestRate) || 0;
 		const serviceFee = parseFloat(form.serviceFee) || 0;
+		const installmentMonths = parseInt(form.installmentMonths) || 1;
 		
-		let totalTransactionAmount;
-		if (form.installmentMonths) {
-			totalTransactionAmount = amount + serviceFee;
+		// Calculate the interest amount
+		const interestAmount = amount * (interestRate / 100);
+		
+		
+		console.log('form.includePrincipalAmountInInstallmentX: ', form.includePrincipalAmountInInstallment);
+		// Calculate the principal amount per month if the checkbox is checked
+		const principalAmountPerMonth = form.includePrincipalAmountInInstallment
+			? amount / installmentMonths
+			: 0;
+		
+		// Calculate the total transaction amount
+		const totalTransactionAmount = interestAmount + principalAmountPerMonth + serviceFee;
+		
+		// Debugging log for totalTransactionAmount
+		console.log('amount:', amount);
+		console.log('interestRate:', interestRate);
+		console.log('serviceFee:', serviceFee);
+		console.log('installmentMonths:', installmentMonths);
+		console.log('interestAmount:', interestAmount);
+		console.log('principalAmountPerMonth:', principalAmountPerMonth);
+		console.log('totalTransactionAmount:', totalTransactionAmount);
+		
+		// Update the totalTransactionAmount in the form state if it's valid
+		if (!isNaN(totalTransactionAmount)) {
+			handleInputChange({ target: { name: 'totalTransactionAmount', value: totalTransactionAmount } }, { name: 'totalTransactionAmount' });
 		} else {
-			totalTransactionAmount = amount + (amount * (interestRate / 100)) + serviceFee;
+			console.error('Calculated totalTransactionAmount is NaN');
 		}
-		
-		handleInputChange({ target: { name: 'totalTransactionAmount', value: totalTransactionAmount } }, { name: 'totalTransactionAmount' });
 	};
 	
 	useEffect(() => {
 		if (form.transactionTypeId === 'financing_out') {
 			calculateTotalTransactionAmount();
 		}
-	}, [form.transactionAmount, form.interestRate, form.serviceFee, form.installmentMonths]);
+	}, [form.transactionAmount, form.interestRate, form.serviceFee, form.installmentMonths, form.includePrincipalAmountInInstallment]);
 	
 	return (
 		<Modal show={showModal} onHide={handleCloseModal}>
@@ -55,34 +81,47 @@ const TransactionModal = ({
 			</Modal.Header>
 			<Modal.Body>
 				<Form onSubmit={handleSubmit}>
-					{filteredFields.filter(x => !x.hidden).map(field => (
-						<Form.Group key={field.name} className="mb-3">
-							<Form.Label htmlFor={field.name}>{field.placeholder}</Form.Label>
-							{field.reactType === 'select' ? (
-								<Form.Control
-									as="select"
-									id={field.name}
-									name={field.name}
-									value={form[field.name]}
-									onChange={handleInputChange}
-								>
-									<option value="">Select {field.placeholder}</option>
-									{(filterOptionsByType(field.source, field.name) || []).map(option => (
-										<option key={option.id} value={option.id}>{option.name}</option>
-									))}
-								</Form.Control>
-							) : (
-								<Form.Control
-									type={field.reactType}
-									id={field.name}
-									name={field.name}
-									value={field.reactType === 'date' && form[field.name] ? form[field.name].split('T')[0] : form[field.name]}
-									onChange={e => handleInputChange(e, field)}
-									placeholder={field.placeholder}
-								/>
-							)}
-						</Form.Group>
-					))}
+					{filteredFields.filter(x => !x.hidden).map(field => {
+						// Conditionally show includePrincipalAmountInInstallment based on installmentMonths
+						if (field.name === 'includePrincipalAmountInInstallment' && !form.installmentMonths) {
+							return null; // Skip rendering this field if installmentMonths is not filled
+						}
+						
+						return (
+							<Form.Group key={field.name} className="mb-3">
+								<Form.Label htmlFor={field.name}>{field.placeholder}</Form.Label>
+								{field.reactType === 'select' ? (
+									<Form.Control
+										as="select"
+										id={field.name}
+										name={field.name}
+										value={form[field.name]}
+										onChange={handleInputChange}
+									>
+										<option value="">Select {field.placeholder}</option>
+										{(filterOptionsByType(field.source, field.name) || []).map(option => (
+											<option key={option.id} value={option.id}>{option.name}</option>
+										))}
+									</Form.Control>
+								) : (
+									<Form.Control
+										type={field.reactType}
+										id={field.name}
+										name={field.name}
+										value={field.reactType === 'date' && form[field.name] ? form[field.name].split('T')[0] : form[field.name]}
+										onChange={(e) => {
+											if (field.reactType === 'number') {
+												handleNonNegativeInput(e, field);
+											} else {
+												handleInputChange(e, field);
+											}
+										}}
+										placeholder={field.placeholder}
+									/>
+								)}
+							</Form.Group>
+						);
+					})}
 					<Button variant="primary" type="submit" className="w-100">
 						{isEditing ? 'Update' : 'Add'} Transaction
 					</Button>
