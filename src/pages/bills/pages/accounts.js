@@ -47,7 +47,7 @@ const Accounts = (props) => {
 	
 	const handleSubmit = async (e) => {
 		e.preventDefault();
-		if (isEditing) {
+		if (isEditing && selectedAccount) {
 			await updateAccount(selectedAccount._id);
 		} else {
 			await createAccount();
@@ -78,7 +78,10 @@ const Accounts = (props) => {
 	const startEditAccount = (account) => {
 		setIsEditing(true);
 		setSelectedAccount(account);
-		setForm(account);
+		setForm({
+			...account,
+			typeId: account.typeId || 'default',
+		});
 		setShowModal(true);
 	};
 	
@@ -124,9 +127,7 @@ const Accounts = (props) => {
 					<Card.Header>
 						<Row>
 							<Col xs={6} className="text-left">
-                <span className="font-weight-bold">
-                  {type}
-                </span>
+								<span className="font-weight-bold">{type}</span>
 							</Col>
 						</Row>
 					</Card.Header>

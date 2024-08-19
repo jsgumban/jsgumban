@@ -1,4 +1,3 @@
-// src/components/account-modal.js
 import React from 'react';
 import { Modal, Button, Form } from 'react-bootstrap';
 
@@ -57,12 +56,14 @@ const AccountModal = ({ showModal, handleCloseModal, handleSubmit, form, handleI
 							) : (
 								<Form.Control
 									type={field.reactType}
+									{...(field.reactType === 'textarea' ? { as: field.reactType, rows: Math.min(8, Math.max(3, Math.ceil((form[field.name] || '').length / 50))) } : {})}  // Dynamic row count based on content length
 									id={field.name}
 									name={field.name}
 									value={field.reactType === 'date' && form[field.name] ? form[field.name].split('T')[0] : form[field.name]}
 									onChange={e => handleInputChange(e, field)}
 									placeholder={field.placeholder}
 								/>
+							
 							)}
 						</Form.Group>
 					))}
