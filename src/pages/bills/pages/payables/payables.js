@@ -307,23 +307,57 @@ const Payables = (props) => {
 		});
 	};
 	
-	const renderCreditCardAccounts = () => {
-		const creditCardAccounts = accounts.filter(account => account.typeId === 'credit_card');
+	const renderCreditCardAndLoanAccounts = () => {
+		// Parse the filterValue into year and month
+		const [filteredYear, filteredMonth] = filterValue.split('-').map(Number);
 		
-		const sortedCreditCardAccounts = creditCardAccounts.map(account => {
-			const currentYear = new Date().getFullYear();
-			const currentMonth = new Date().getMonth();
-			const statementDate = new Date(currentYear, currentMonth, account.billGenerationDate);
-			const dueDate = new Date(currentYear, currentMonth, account.billDueDate);
+		// Filter accounts to include both credit cards and loans
+		const relevantAccounts = accounts.filter(account =>
+			account.typeId === 'credit_card' || account.typeId === 'loan'
+		);
+		
+		// Sort accounts by their due dates
+		const sortedAccounts = relevantAccounts.map(account => {
+			const currentYear = filteredYear || new Date().getFullYear();
+			const currentMonth = (filteredMonth - 1) || new Date().getMonth();
 			
-			// Check if the statementDate is in the future; if so, use the previous month
-			if (statementDate > new Date()) {
-				statementDate.setMonth(statementDate.getMonth() - 1);
+			let dueDate;
+			let loanProgress = '';
+			
+			if (account.typeId === 'loan') {
+				const startDate = new Date(account.transactionStartDate); // Loan start date
+				const endMonth = new Date(startDate); // Copy start date to calculate end of installments
+				endMonth.setMonth(startDate.getMonth() + account.installmentMonths); // End of installment period
+				
+				const isWithinInstallmentPeriod =
+					new Date(currentYear, currentMonth) >= new Date(startDate.getFullYear(), startDate.getMonth()) &&
+					new Date(currentYear, currentMonth) < new Date(endMonth.getFullYear(), endMonth.getMonth());
+				
+				if (isWithinInstallmentPeriod) {
+					// Calculate due date for the filtered month
+					dueDate = new Date(currentYear, currentMonth, account.billDueDate);
+					
+					// Calculate how many months have passed since the start date
+					const monthsPassed = (currentYear - startDate.getFullYear()) * 12 + (currentMonth - startDate.getMonth()) + 1;
+					loanProgress = `(${monthsPassed} month / ${account.installmentMonths} installments)`;
+					
+					// Adjust the due date if needed
+					if (dueDate < new Date(currentYear, currentMonth)) {
+						dueDate.setMonth(dueDate.getMonth() + 1);
+					}
+				} else {
+					return null; // Exclude loans outside the installment period
+				}
+			} else if (account.typeId === 'credit_card') {
+				// For credit cards, calculate the due date normally based on the filtered month
+				dueDate = new Date(currentYear, currentMonth, account.billDueDate);
 			}
 			
-			return { ...account, dueDate };
-		}).sort((a, b) => a.dueDate - b.dueDate);
+			return { ...account, dueDate, loanProgress };
+		}).filter(Boolean) // Filter out null loans (outside the installment period)
+			.sort((a, b) => a.dueDate - b.dueDate); // Sort accounts by due date
 		
+		// Highlight accounts with transactions
 		const highlightedAccounts = filteredTransactions.map(transaction => transaction.transactionAccountId);
 		
 		const getHighlightClass = (account) => {
@@ -346,21 +380,30 @@ const Payables = (props) => {
 		return (
 			<div>
 				<ListGroup>
-					{sortedCreditCardAccounts.map(account => {
+					{sortedAccounts.map(account => {
 						const highlightClass = getHighlightClass(account);
 						return (
-							<ListGroup.Item key={account.accountNumber} className={highlightClass}>
-								<div style={{ fontSize: '0.64em' }}><strong>{account ? `${account.name} (${account.accountNumber.slice(-4)})` : 'N/A'}</strong></div>
-								<div style={{ fontSize: '0.65em' }}><strong>Due Date:</strong> {account.dueDate.toLocaleDateString()}</div>
+							<ListGroup.Item key={account._id} className={highlightClass}>
+								<div style={{ fontSize: '0.64em' }}>
+									<strong>{account.name} ({account.typeId === 'credit_card' ? account.accountNumber.slice(-4) : 'Loan'})</strong>
+								</div>
+								<div style={{ fontSize: '0.65em' }}>
+									<strong>Due Date:</strong> {account.dueDate.toLocaleDateString()}
+								</div>
+								{account.typeId === 'loan' && (
+									<div style={{ fontSize: '0.65em' }}>
+										<strong>Amortization:</strong> {formatMoneyIntl(account.amortization)}
+										<br />
+										<strong>Progress:</strong> {account.loanProgress}
+									</div>
+								)}
 							</ListGroup.Item>
 						);
 					})}
 				</ListGroup>
-			
 			</div>
 		);
 	};
-	
 	
 	return (
 		<Container className="my-4">
@@ -395,7 +438,7 @@ const Payables = (props) => {
 				{filterType === 'month' ? (
 					<Row>
 						<Col md={3}>
-							{renderCreditCardAccounts()}
+							{renderCreditCardAndLoanAccounts()}
 						</Col>
 						<Col md={9}>
 							<ListGroup variant="flush">
