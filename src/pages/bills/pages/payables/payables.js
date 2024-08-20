@@ -21,6 +21,8 @@ const Payables = (props) => {
 	const [filterType, setFilterType] = useState('month');
 	const [filterValue, setFilterValue] = useState(`${new Date().getFullYear()}-${String(new Date().getMonth() + 1).padStart(2, '0')}`);
 	const payableTypes = ["loan_payment", "installment", "expense", "credit_card_expense", "credit_card_out"];
+	const [unfilteredTransactions, setUnfilteredTransactions] = useState([]);
+	
 	
 	useEffect(() => {
 		fetchTransactions();
@@ -30,6 +32,10 @@ const Payables = (props) => {
 	
 	const fetchTransactions = async () => {
 		const response = await apiClient.get('/bills/transactions');
+		const unfilteredTransactions = response.data;
+		console.log('unfilteredTransactionsX: ', unfilteredTransactions);
+		setUnfilteredTransactions(unfilteredTransactions)
+		
 		const filteredTransactions = response.data.filter(transaction => payableTypes.includes(transaction.transactionTypeId));
 		setTransactions(filteredTransactions);
 	};
@@ -101,12 +107,11 @@ const Payables = (props) => {
 	const openPayModal = (transaction) => {
 		setIsEditing(true);
 		setSelectedTransaction(transaction);
-		setForm({ ...transaction, transactionTypeId: 'bill_payment', transactionDate: new Date().toISOString(), transactionAccountId: null }); // Update transaction type to 'payment' or handle appropriately
+		setForm({ ...transaction, transactionTypeId: 'bill_payment', transactionDate: new Date().toISOString(), transactionAccountId: null });
 		setShowModal(true);
 	};
 	
 	const payTransaction = async () => {
-		// Create a new counter transaction to reflect the payment
 		const counterTransaction = {
 			transactionTypeId: form.transactionTypeId,
 			transactionDate: form.transactionDate,
@@ -117,7 +122,6 @@ const Payables = (props) => {
 		};
 		const response = await apiClient.post('/bills/transactions', counterTransaction);
 		
-		// Update the original transaction to mark it as paid
 		if (response && response.data) {
 			const updatedTransaction = {
 				paid: true,
@@ -129,50 +133,43 @@ const Payables = (props) => {
 		fetchTransactions();
 	};
 	
-	const getFieldsForType = (typeId) => {
-		const commonFields = transactionsConfig.common;
-		const typeFields = transactionsConfig.types[typeId] || [];
-		return [...commonFields, ...typeFields];
-	};
-	
-	const getAccountName = (accountId) => {
-		const account = accounts.find(acc => acc._id === accountId);
-		return account ? account.name : 'N/A';
-	};
-	
-	const filteredFields = getFieldsForType(form.transactionTypeId);
-	
-	const groupByWeek = (transactions) => {
-		return transactions.reduce((acc, transaction) => {
-			const account = accounts.find(acc => acc._id === transaction.transactionAccountId);
-			if (!account) return acc;
-			const billingCycle = getBillingCycle(transaction, account);
-			const dueDate = getDueDate(billingCycle, account).date;
-			const weekRange = getWeekDateRange(dueDate);
-			const weekKey = `${weekRange.start} - ${weekRange.end}`;
+	const generateLoanTransactions = () => {
+		const [filteredYear, filteredMonth] = filterValue.split('-').map(Number);
+		const loanAccounts = accounts.filter(account => account.typeId === 'loan');
+		const generatedTransactions = [];
+		
+		loanAccounts.forEach((async account => {
+			const startDate = new Date(account.transactionStartDate);
+			const endMonth = new Date(startDate);
+			endMonth.setMonth(startDate.getMonth() + account.installmentMonths);
 			
-			if (!acc[weekKey]) {
-				acc[weekKey] = [];
-			}
-			acc[weekKey].push({ ...transaction, dueDate, remainingDays: getDueDate(billingCycle, account).remainingDays });
-			return acc;
-		}, {});
-	};
-	
-	const groupByMonth = (transactions) => {
-		return transactions.reduce((acc, transaction) => {
-			const account = accounts.find(acc => acc._id === transaction.transactionAccountId);
-			if (!account) return acc;
-			const billingCycle = getBillingCycle(transaction, account);
-			const dueDate = getDueDate(billingCycle, account).date;
-			const month = `${dueDate.getFullYear()}-${String(dueDate.getMonth() + 1).padStart(2, '0')}`;
+			const isWithinInstallmentPeriod =
+				new Date(filteredYear, filteredMonth - 1) >= new Date(startDate.getFullYear(), startDate.getMonth()) &&
+				new Date(filteredYear, filteredMonth - 1) < new Date(endMonth.getFullYear(), endMonth.getMonth());
 			
-			if (!acc[month]) {
-				acc[month] = [];
+			
+			const id = `${account._id}-${filteredYear}-${filteredMonth}`;
+			
+			const isPaid = unfilteredTransactions.find(
+				unfilteredTransaction => unfilteredTransaction.relatedTransactionId === id
+			);
+			
+			if (isWithinInstallmentPeriod) {
+				const dueDate = new Date(filteredYear, filteredMonth - 1, account.billDueDate);
+				generatedTransactions.push({
+					_id: id,
+					transactionAccountId: account._id,
+					transactionAmount: account.amortization,
+					transactionTypeId: 'loan_amortization',
+					transactionDate: new Date().toISOString(),
+					dueDate: dueDate.toISOString(),
+					paid: isPaid,
+					remainingDays: Math.ceil((dueDate - new Date()) / (1000 * 60 * 60 * 24)),
+				});
 			}
-			acc[month].push({ ...transaction, dueDate, remainingDays: getDueDate(billingCycle, account).remainingDays });
-			return acc;
-		}, {});
+		}));
+		
+		return generatedTransactions;
 	};
 	
 	const filterTransactions = () => {
@@ -202,22 +199,13 @@ const Payables = (props) => {
 				const dueDate = getDueDate(billingCycle, account).date;
 				return { ...transaction, dueDate, remainingDays: getDueDate(billingCycle, account).remainingDays };
 			});
-		} else if (filterType === 'year') {
-			filteredTransactions = transactions.filter(transaction => {
-				const account = accounts.find(acc => acc._id === transaction.transactionAccountId);
-				if (!account) return false;
-				
-				const billingCycle = getBillingCycle(transaction, account);
-				const dueDate = getDueDate(billingCycle, account).date;
-				const year = dueDate.getFullYear().toString();
-				return year === filterValue;
-			}).map(transaction => {
-				const account = accounts.find(acc => acc._id === transaction.transactionAccountId);
-				const billingCycle = getBillingCycle(transaction, account);
-				const dueDate = getDueDate(billingCycle, account).date;
-				return { ...transaction, dueDate, remainingDays: getDueDate(billingCycle, account).remainingDays };
-			});
 		}
+		
+		// Generate loan transactions for the filtered period
+		const loanTransactions = generateLoanTransactions();
+		
+		// Merge loan transactions with the existing filtered transactions
+		filteredTransactions = filteredTransactions.concat(loanTransactions);
 		
 		return filteredTransactions.sort((a, b) => new Date(a.dueDate) - new Date(b.dueDate));
 	};
@@ -232,11 +220,38 @@ const Payables = (props) => {
 	const filteredTransactions = filterTransactions();
 	const progress = totalDue ? (totalPaid / totalDue) * 100 : 0;
 	
+	// Group transactions by week
+	const groupByWeek = (transactions) => {
+		const grouped = {};
+		transactions.forEach(transaction => {
+			const dueDate = new Date(transaction.dueDate);
+			const weekRange = getWeekDateRange(dueDate);
+			const weekKey = `${weekRange.start} - ${weekRange.end}`;
+			if (!grouped[weekKey]) grouped[weekKey] = [];
+			grouped[weekKey].push(transaction);
+		});
+		return grouped;
+	};
+	
+	// Group transactions by month
+	const groupByMonth = (transactions) => {
+		const grouped = {};
+		transactions.forEach(transaction => {
+			const dueDate = new Date(transaction.dueDate);
+			const monthKey = `${dueDate.getFullYear()}-${String(dueDate.getMonth() + 1).padStart(2, '0')}`;
+			if (!grouped[monthKey]) grouped[monthKey] = [];
+			grouped[monthKey].push(transaction);
+		});
+		return grouped;
+	};
+	
+	// Helper to determine if a date range is in the current week
 	const isCurrentWeek = (start, end) => {
 		const today = new Date();
 		return today >= new Date(start) && today <= new Date(end);
 	};
 	
+	// Helper to determine if a month is the current month
 	const isCurrentMonth = (month) => {
 		const today = new Date();
 		const [year, monthNum] = month.split('-');
@@ -250,8 +265,8 @@ const Payables = (props) => {
 			const progress = totalDue ? (totalPaid / totalDue) * 100 : 0;
 			const borderClass = isBorderClass(range) ? 'border-warning' : '';
 			
-			const isFilled = progress >= 100; // Determine if the progress is filled
-			const progressColor = isFilled ? '#28a745' : '#ffc107'; // Success or warning color
+			const isFilled = progress >= 100;
+			const progressColor = isFilled ? '#28a745' : '#ffc107';
 			
 			return (
 				<div key={range} className={`card mb-4 ${borderClass}`}>
@@ -308,15 +323,9 @@ const Payables = (props) => {
 	};
 	
 	const renderCreditCardAndLoanAccounts = () => {
-		// Parse the filterValue into year and month
 		const [filteredYear, filteredMonth] = filterValue.split('-').map(Number);
+		const relevantAccounts = accounts.filter(account => account.typeId === 'credit_card' || account.typeId === 'loan');
 		
-		// Filter accounts to include both credit cards and loans
-		const relevantAccounts = accounts.filter(account =>
-			account.typeId === 'credit_card' || account.typeId === 'loan'
-		);
-		
-		// Sort accounts by their due dates
 		const sortedAccounts = relevantAccounts.map(account => {
 			const currentYear = filteredYear || new Date().getFullYear();
 			const currentMonth = (filteredMonth - 1) || new Date().getMonth();
@@ -325,39 +334,30 @@ const Payables = (props) => {
 			let loanProgress = '';
 			
 			if (account.typeId === 'loan') {
-				const startDate = new Date(account.transactionStartDate); // Loan start date
-				const endMonth = new Date(startDate); // Copy start date to calculate end of installments
-				endMonth.setMonth(startDate.getMonth() + account.installmentMonths); // End of installment period
+				const startDate = new Date(account.transactionStartDate);
+				const endMonth = new Date(startDate);
+				endMonth.setMonth(startDate.getMonth() + account.installmentMonths);
 				
 				const isWithinInstallmentPeriod =
 					new Date(currentYear, currentMonth) >= new Date(startDate.getFullYear(), startDate.getMonth()) &&
 					new Date(currentYear, currentMonth) < new Date(endMonth.getFullYear(), endMonth.getMonth());
 				
 				if (isWithinInstallmentPeriod) {
-					// Calculate due date for the filtered month
 					dueDate = new Date(currentYear, currentMonth, account.billDueDate);
 					
-					// Calculate how many months have passed since the start date
 					const monthsPassed = (currentYear - startDate.getFullYear()) * 12 + (currentMonth - startDate.getMonth()) + 1;
 					loanProgress = `(${monthsPassed} month / ${account.installmentMonths} installments)`;
-					
-					// Adjust the due date if needed
-					if (dueDate < new Date(currentYear, currentMonth)) {
-						dueDate.setMonth(dueDate.getMonth() + 1);
-					}
 				} else {
-					return null; // Exclude loans outside the installment period
+					return null;
 				}
 			} else if (account.typeId === 'credit_card') {
-				// For credit cards, calculate the due date normally based on the filtered month
 				dueDate = new Date(currentYear, currentMonth, account.billDueDate);
 			}
 			
 			return { ...account, dueDate, loanProgress };
-		}).filter(Boolean) // Filter out null loans (outside the installment period)
-			.sort((a, b) => a.dueDate - b.dueDate); // Sort accounts by due date
+		}).filter(Boolean)
+			.sort((a, b) => a.dueDate - b.dueDate);
 		
-		// Highlight accounts with transactions
 		const highlightedAccounts = filteredTransactions.map(transaction => transaction.transactionAccountId);
 		
 		const getHighlightClass = (account) => {
@@ -367,15 +367,16 @@ const Payables = (props) => {
 				const daysUntilDue = Math.ceil((account.dueDate - currentDate) / (1000 * 60 * 60 * 24));
 				
 				if (transaction.paid) {
-					return 'highlight-green'; // Paid transactions
+					return 'highlight-green';
 				} else if (daysUntilDue <= 3) {
-					return 'highlight-red'; // Almost due transactions (within 3 days)
+					return 'highlight-red';
 				} else {
-					return 'highlight-yellow'; // Regular highlighted transactions
+					return 'highlight-yellow';
 				}
 			}
 			return '';
 		};
+		
 		
 		return (
 			<div>
@@ -385,7 +386,7 @@ const Payables = (props) => {
 						return (
 							<ListGroup.Item key={account._id} className={highlightClass}>
 								<div style={{ fontSize: '0.64em' }}>
-									<strong>{account.name} ({account.typeId === 'credit_card' ? account.accountNumber.slice(-4) : 'Loan'})</strong>
+									<strong>{account.name} ({account.typeId === 'credit_card' ? account?.accountNumber?.slice(-4) : 'Loan'})</strong>
 								</div>
 								<div style={{ fontSize: '0.65em' }}>
 									<strong>Due Date:</strong> {account.dueDate.toLocaleDateString()}
@@ -404,6 +405,15 @@ const Payables = (props) => {
 			</div>
 		);
 	};
+	
+	const getFieldsForType = (typeId) => {
+		const commonFields = transactionsConfig.common;
+		const typeFields = transactionsConfig.types[typeId] || [];
+		return [...commonFields, ...typeFields];
+	};
+	
+	const filteredFields = getFieldsForType(form.transactionTypeId);
+	
 	
 	return (
 		<Container className="my-4">
