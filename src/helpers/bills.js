@@ -8,6 +8,12 @@ export  const formatReadableDate = (dateString) => {
 	return date.toLocaleDateString('en-US', options);
 }
 
+export const formatReadableDateTime = (timestamp) => {
+	if (!timestamp) return '';
+	const date = new Date(timestamp);
+	return `${date.toLocaleDateString()} ${date.toLocaleTimeString()}`;
+};
+
 export const isValidDate = (dateString) => {
 	if (!dateString) return false;
 	

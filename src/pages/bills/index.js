@@ -8,6 +8,7 @@ import Register from "./pages/users/register";
 import Profile from "./pages/users/profile";
 import './styles/custom.scss';
 import Financing from "./pages/financing/financing";
+import GamblingTransactions from "./pages/gambling/gambling-transactions";
 
 const Dashboard = () => <div>Home Content</div>;
 
@@ -24,17 +25,19 @@ const BillsApp = () => {
 	} else {
 		
 		// tabs.push({ id: 'dashboard', title: 'Dashboard', Component: Dashboard });
+		tabs.push({ id: 'gambling', title: 'Gambling', Component: GamblingTransactions });
 		tabs.push({ id: 'payables', title: 'Payables', Component: Payables });
 		tabs.push({ id: 'financing', title: 'Financing', Component: Financing });
 		tabs.push({ id: 'ledger', title: 'Ledger', Component: Ledger });
 		tabs.push({ id: 'accounts', title: 'Accounts', Component: Accounts });
 		tabs.push({ id: 'profile', title: 'Profile', Component: Profile });
+		
 	}
 	
 	useEffect(() => {
 		if (isAuthenticated) {
 			fetchDefaults();
-			setActiveTab('profile')
+			setActiveTab('gambling')
 		}
 	}, [isAuthenticated]);
 	
