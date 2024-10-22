@@ -25,7 +25,7 @@ const BillsApp = () => {
 	} else {
 		
 		// tabs.push({ id: 'dashboard', title: 'Dashboard', Component: Dashboard });
-		tabs.push({ id: 'gambling', title: 'Gambling', Component: GamblingTransactions });
+		// tabs.push({ id: 'gambling', title: 'Gambling', Component: GamblingTransactions });
 		tabs.push({ id: 'payables', title: 'Payables', Component: Payables });
 		tabs.push({ id: 'financing', title: 'Financing', Component: Financing });
 		tabs.push({ id: 'ledger', title: 'Ledger', Component: Ledger });
@@ -34,10 +34,10 @@ const BillsApp = () => {
 		
 	}
 	
-	useEffect(() => {
+	useEffect(async () => {
 		if (isAuthenticated) {
 			fetchDefaults();
-			setActiveTab('gambling')
+			setActiveTab('profile')
 		}
 	}, [isAuthenticated]);
 	
