@@ -20,6 +20,7 @@ import {
 } from "./financing-utils";
 import apiClient from "../../../../helpers/api";
 import { formatMoneyIntl, formatMoneyPHP } from "../../../../helpers/bills";
+import NotesPanel from "../../components/task-panel";
 
 const Financing = (props) => {
 	const { transactions: transactionsConfig, transactionTypes, categories, repeatOptions } = props.defaults;
@@ -447,7 +448,8 @@ const Financing = (props) => {
 	};
 	
 	return (
-		<Container className="my-4">
+		<div className="my-4">
+			{/* Header */}
 			<div className="d-flex justify-content-between align-items-center my-4">
 				<h4 className="mb-0">Financing</h4>
 				<div>
@@ -459,6 +461,8 @@ const Financing = (props) => {
 					</Button>
 				</div>
 			</div>
+			
+			{/* Filters & Summary Card */}
 			<FinancingFilter
 				filterType={filterType}
 				filterValue={filterValue}
@@ -470,6 +474,8 @@ const Financing = (props) => {
 				showPartial={showPartial}
 				onShowPartialChange={setShowPartial}
 			/>
+			
+			{/* Summary Card */}
 			<FinancingCard
 				totalEarnings={totalEarnings}
 				totalDue={totalDue}
@@ -481,20 +487,33 @@ const Financing = (props) => {
 				filterValue={filterValue}
 				filterAccount={filterAccount}
 			/>
+			
+			{/* Notes + Transactions Layout */}
 			<div className="mb-4">
-				<FinancingList
-					groupedTransactions={groupBy(filteredTransactions)}
-					unfilteredTransactions={unfilteredTransactions}
-					groupBy={groupBy}
-					isCurrentPeriod={isCurrentPeriod}
-					transactionTypes={transactionTypes}
-					accounts={accounts}
-					startEditTransaction={startEditTransaction}
-					deleteTransaction={deleteTransaction}
-					openPayModal={openPayModal}
-				/>
+				<div className="row">
+					{/* Left Column - Notes Panel */}
+					<div className="col-md-3">
+						<NotesPanel taskType="financing" placeholder="Write financing notes here..." />
+					</div>
+					
+					{/* Right Column - Transactions List */}
+					<div className="col-md-9">
+						<FinancingList
+							groupedTransactions={groupBy(filteredTransactions)}
+							unfilteredTransactions={unfilteredTransactions}
+							groupBy={groupBy}
+							isCurrentPeriod={isCurrentPeriod}
+							transactionTypes={transactionTypes}
+							accounts={accounts}
+							startEditTransaction={startEditTransaction}
+							deleteTransaction={deleteTransaction}
+							openPayModal={openPayModal}
+						/>
+					</div>
+				</div>
 			</div>
 			
+			{/* Transaction Modal */}
 			<TransactionModal
 				showModal={showModal}
 				handleCloseModal={() => setShowModal(false)}
@@ -505,7 +524,8 @@ const Financing = (props) => {
 				isEditing={isEditing}
 				modalType="financing"
 			/>
-		</Container>
+		</div>
+	
 	);
 };
 

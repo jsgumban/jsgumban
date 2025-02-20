@@ -55,34 +55,40 @@ const BillsApp = () => {
 	};
 	
 	return (
-		<div className="container mt-3 mb-5 pb-5">
-			<ul className="nav nav-tabs">
-				{tabs.map(tab => (
-					<li key={tab.id} className="nav-item">
-						<a
-							className={`nav-link ${activeTab === tab.id ? 'active' : ''}`}
-							href={`#${tab.id}`}
-							onClick={(e) => {
-								e.preventDefault();
-								handleSetActiveTab(tab.id);
-							}}
-						>
-							{tab.title}
-						</a>
-					</li>
-				))}
-			</ul>
-			
-			<div className="tab-content mt-2">
-				{ tabs.map(({ id, Component }) => (
-					activeTab === id &&
-					<div key={id} className="tab-pane fade show active">
-						<Component defaults={defaults} setActiveTab={handleSetActiveTab} />
+		<div className="container-fluid vh-100 d-flex flex-column justify-content-start">
+			<div className="row justify-content-center">
+				<div className="col-md-10 col-lg-10 col-xl-10">
+					<ul className="nav nav-tabs">
+						{tabs.map(tab => (
+							<li key={tab.id} className="nav-item">
+								<a
+									className={`nav-link ${activeTab === tab.id ? 'active' : ''}`}
+									href={`#${tab.id}`}
+									onClick={(e) => {
+										e.preventDefault();
+										handleSetActiveTab(tab.id);
+									}}
+								>
+									{tab.title}
+								</a>
+							</li>
+						))}
+					</ul>
+					
+					<div className="tab-content mt-2">
+						{tabs.map(({ id, Component }) => (
+							activeTab === id && (
+								<div key={id} className="tab-pane fade show active">
+									<Component defaults={defaults} setActiveTab={handleSetActiveTab} />
+								</div>
+							)
+						))}
 					</div>
-				))}
+				</div>
 			</div>
 		</div>
 	);
+	
 };
 
 export default BillsApp;

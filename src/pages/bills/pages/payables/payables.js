@@ -9,6 +9,7 @@ import PayableTransactionItem from "./payable-transaction-item";
 import { CircularProgressbar, buildStyles, CircularProgressbarWithChildren } from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css';
 import { FaCheckCircle, FaExclamationCircle } from 'react-icons/fa';
+import NotesPanel from "../../components/task-panel";
 
 const Payables = (props) => {
 	const { transactions: transactionsConfig, transactionTypes, categories, repeatOptions } = props.defaults;
@@ -416,18 +417,23 @@ const Payables = (props) => {
 	
 	
 	return (
-		<Container className="my-4">
+		<div className="my-4">
+			{/* Header Section */}
 			<div className="d-flex justify-content-between align-items-center my-4">
 				<h4 className="mb-0">Payables</h4>
 				<Button variant="primary" onClick={() => { initializeForm(); setShowModal(true); }}>
 					Add Payable
 				</Button>
 			</div>
+			
+			{/* Filter Section */}
 			<PayableTransactionFilter
 				filterType={filterType}
 				filterValue={filterValue}
 				onFilterChange={handleFilterChange}
 			/>
+			
+			{/* Summary Panel */}
 			<div className="mb-4">
 				<div className="card custom-panel mb-3">
 					<div className="card-header text-white bg-danger">
@@ -445,40 +451,37 @@ const Payables = (props) => {
 						</div>
 					</div>
 				</div>
-				{filterType === 'month' ? (
-					<Row>
-						<Col md={3}>
-							{renderCreditCardAndLoanAccounts()}
-						</Col>
-						<Col md={9}>
-							<ListGroup variant="flush">
-								{filteredTransactions.length === 0 ? (
-									<ListGroup.Item>
-										<div className="text-muted">No payables for this period.</div>
-									</ListGroup.Item>
-								) : (
-									renderGroupedTransactions(groupByWeek(filteredTransactions), isCurrentWeek)
-								)}
-							</ListGroup>
-						</Col>
-					</Row>
-				) : (
+			</div>
+			
+			{/* Notes, Credit Card / Loans, and Transactions Layout */}
+			<Row>
+				{/* Left Side - Notes Panel */}
+				<Col md={3}>
+					<NotesPanel taskType="payable" placeholder="Write payable notes here..." />
+				</Col>
+				
+				{/* Middle - Credit Card & Loan Accounts */}
+				<Col md={3}>
+					{renderCreditCardAndLoanAccounts()}
+				</Col>
+				
+				{/* Right Side - Transactions List */}
+				<Col md={6}>
 					<ListGroup variant="flush">
 						{filteredTransactions.length === 0 ? (
 							<ListGroup.Item>
 								<div className="text-muted">No payables for this period.</div>
 							</ListGroup.Item>
 						) : (
-							filterType === 'year' ? (
-								renderGroupedTransactions(groupByMonth(filteredTransactions), isCurrentMonth)
-							) : (
-								renderGroupedTransactions(groupByWeek(filteredTransactions), isCurrentWeek)
-							)
+							filterType === 'year'
+								? renderGroupedTransactions(groupByMonth(filteredTransactions), isCurrentMonth)
+								: renderGroupedTransactions(groupByWeek(filteredTransactions), isCurrentWeek)
 						)}
 					</ListGroup>
-				)}
-			</div>
+				</Col>
+			</Row>
 			
+			{/* Transaction Modal */}
 			<TransactionModal
 				showModal={showModal}
 				handleCloseModal={() => setShowModal(false)}
@@ -488,7 +491,8 @@ const Payables = (props) => {
 				filteredFields={filteredFields}
 				isEditing={isEditing}
 			/>
-		</Container>
+		</div>
+	
 	);
 };
 
