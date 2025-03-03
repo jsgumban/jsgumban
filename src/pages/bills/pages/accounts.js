@@ -59,6 +59,7 @@ const Accounts = (props) => {
 	};
 	
 	const createAccount = async () => {
+		console.log('formX: ', form);
 		await apiClient.post('/bills/accounts', form);
 		fetchAccounts();
 	};

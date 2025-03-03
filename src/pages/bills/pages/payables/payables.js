@@ -458,6 +458,10 @@ const Payables = (props) => {
 				{/* Left Side - Notes Panel */}
 				<Col md={3}>
 					<NotesPanel taskType="payable" placeholder="Write payable notes here..." />
+					<NotesPanel taskType="payable-due-1" placeholder="Write payable notes here..." taskName="Week 1"/>
+					<NotesPanel taskType="payable-due-2" placeholder="Write payable notes here..." taskName="Week 2"/>
+					<NotesPanel taskType="payable-due-3" placeholder="Write payable notes here..." taskName="Week 3"/>
+					<NotesPanel taskType="payable-due-4" placeholder="Write payable notes here..." taskName="Week 4"/>
 				</Col>
 				
 				{/* Middle - Credit Card & Loan Accounts */}
