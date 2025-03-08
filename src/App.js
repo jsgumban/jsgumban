@@ -57,7 +57,7 @@ const App = () => {
     
                     <Route path={`${process.env.PUBLIC_URL + "/scout"}`} component={ScoutApp}/>
                     <Route path={`${process.env.PUBLIC_URL + "/bills"}`} component={BillsApp}/>
-                    <Route path={`${process.env.PUBLIC_URL + "/websocket"}`} component={WebscoketApp}/>
+                    {/*<Route path={`${process.env.PUBLIC_URL + "/websocket"}`} component={WebscoketApp}/>*/}
                     <Route exact component={ErrorPage}/>
                     
                     

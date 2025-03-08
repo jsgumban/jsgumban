@@ -17,7 +17,7 @@ const LedgerItem = ( { transaction, account, startEditTransaction, deleteTransac
 				<Col xs={6}>
 					<div><strong>Date:</strong> {formatReadableDate(transaction.transactionDate)}</div>
 					<div><strong>Type:</strong> {getValueByKey(transactionTypes, transaction.transactionTypeId)}</div>
-					<div><strong>Account:</strong> {account ? account.name : 'N/A'}</div>
+					<div><strong>Account:</strong> {account ? account.name : 'N/A'} </div>
 					{transaction.transactionNote && <div><strong>Note:</strong> {transaction.transactionNote}</div>}
 					<div>
 						<strong>Status:</strong>

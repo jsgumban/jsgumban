@@ -1,6 +1,7 @@
-import React from 'react';
-import { Row, Col, Button, ListGroup, Badge } from 'react-bootstrap';
+import React, { useState } from 'react';
+import { Row, Col, Button, ListGroup, Badge, OverlayTrigger, Tooltip } from 'react-bootstrap';
 import {getDayInfo, formatMoneyIntl, formatReadableDate, getBillingCycle, getDueDate} from "../../../../helpers/bills";
+import { FaCopy } from "react-icons/fa";
 
 const PayableTransactionItem = ({ transaction, account, startEditTransaction, deleteTransaction, openPayModal }) => {
 	let billingCycle, dueDate;
@@ -40,10 +41,24 @@ const PayableTransactionItem = ({ transaction, account, startEditTransaction, de
 	
 	const badgeVariant = getBadgeVariant(remainingDays, transaction.paid);
 	
+	const [copied, setCopied] = useState(false);
+	
+	const transactionText = account
+		? `${account.name} (${account?.accountNumber?.slice(-4) || "Loan"}) - ${formatMoneyIntl(
+			transaction.transactionAmount
+		)}`
+		: "N/A";
+	
+	const handleCopy = () => {
+		navigator.clipboard.writeText(transactionText);
+		setCopied(true);
+		setTimeout(() => setCopied(false), 2000); // Reset tooltip after 2 seconds
+	};
+	
 	return (
 		<ListGroup.Item key={transaction._id}>
 			<Row>
-				<Col xs={3} className="text-center my-auto">
+				<Col xs={2} className="text-center my-auto">
 					<div className="d-flex align-items-center date-info">
 						<div className="font-weight-bold">{getDayInfo(validDueDate).dayNumber}</div>
 						<div className="day-details">
@@ -51,14 +66,29 @@ const PayableTransactionItem = ({ transaction, account, startEditTransaction, de
 						</div>
 					</div>
 				</Col>
-				<Col xs={6}>
-					<div><strong>Due Date:</strong> {validDueDate.toLocaleDateString()}</div>
-					<div>
-						<strong>Account: </strong>
-						{account ? `${account.name} (${account?.accountNumber?.slice(-4) || 'Loan'})` : 'N/A'}
-					</div>
-					<div><strong>Transaction Date:</strong> {formatReadableDate(transaction.transactionDate)}</div>
-					<div><strong>Billing Cycle:</strong> {billingCycle.start.toLocaleDateString()} - {billingCycle.end.toLocaleDateString()}</div>
+				<Col xs={7}>
+					
+					
+					<button
+						onClick={handleCopy}
+						style={{
+							border: "none",
+							padding: "0",
+							background: "transparent",
+							cursor: "pointer",
+						}}
+					>
+						<div style={{ fontWeight: "bold", textAlign: "left"}}>{transactionText}</div>
+						{/*<FaCopy size={12} color={copied ? "green" : "gray"} />*/}
+					</button>
+					
+					{/*<div><strong>Due Date:</strong> {validDueDate.toLocaleDateString()}</div>*/}
+					{/*<div style={{ fontWeight: "bold"}}>*/}
+					{/*	/!*<strong>Account: </strong>*!/*/}
+					{/*	{account ? `${account.name} (${account?.accountNumber?.slice(-4) || 'Loan'})` : 'N/A'} - <span style={{ color: "red"}}>{formatMoneyIntl(transaction.transactionAmount)}</span>*/}
+					{/*</div>*/}
+					{/*<div><strong>Transaction Date:</strong> {formatReadableDate(transaction.transactionDate)}</div>*/}
+					{/*<div><strong>Billing Cycle:</strong> {billingCycle.start.toLocaleDateString()} - {billingCycle.end.toLocaleDateString()}</div>*/}
 					{transaction.transactionNote && <div><strong>Note:</strong> {transaction.transactionNote}</div>}
 					{account?.typeId === 'loan' && transaction.loanProgress && (
 						<div><strong>Progress:</strong> {transaction.loanProgress}</div>
@@ -71,7 +101,7 @@ const PayableTransactionItem = ({ transaction, account, startEditTransaction, de
 					</div>
 				</Col>
 				<Col xs={3} className="text-right">
-					<div className="text-danger mb-2">{formatMoneyIntl(transaction.transactionAmount)}</div>
+					{/*<div className="text-danger mb-2">{formatMoneyIntl(transaction.transactionAmount)}</div>*/}
 					{!transaction.paid && (
 						<div className="d-flex justify-content-between align-items-center">
 							<Button variant="outline-primary" size="sm" className="mr-2" onClick={() => startEditTransaction(transaction)}>Edit</Button>
