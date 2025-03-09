@@ -10,6 +10,7 @@ import { CircularProgressbar, buildStyles, CircularProgressbarWithChildren } fro
 import 'react-circular-progressbar/dist/styles.css';
 import { FaCheckCircle, FaExclamationCircle } from 'react-icons/fa';
 import NotesPanel from "../../components/task-panel";
+import PayableTaskPanel from "../../components/payable-task-panel";
 
 const Payables = (props) => {
 	const { transactions: transactionsConfig, transactionTypes, categories, repeatOptions } = props.defaults;
@@ -21,7 +22,7 @@ const Payables = (props) => {
 	const [selectedTransaction, setSelectedTransaction] = useState(null);
 	const [filterType, setFilterType] = useState('month');
 	const [filterValue, setFilterValue] = useState(`${new Date().getFullYear()}-${String(new Date().getMonth() + 1).padStart(2, '0')}`);
-	const payableTypes = ["loan_payment", "installment", "expense", "credit_card_expense", "credit_card_out"];
+	const payableTypes = ["loan_payment", "installment", "expense", "credit_card_expense", "credit_card_out", "credit_card_partial", "salary"];
 	const [unfilteredTransactions, setUnfilteredTransactions] = useState([]);
 	
 	
@@ -55,13 +56,26 @@ const Payables = (props) => {
 	};
 	
 	const handleInputChange = (e, field) => {
-		const { name, value } = e.target;
-		if (field?.reactType === 'number') {
+		const { name, value, type, checked } = e.target;
+		
+		if (type === 'checkbox') {
+			form[name] = checked;
+		} else if (field?.reactType === 'number') {
 			form[name] = parseFloat(value) || 0;
 		} else {
 			form[name] = value;
 		}
+		
+		if (form.transactionTypeId === 'financing_partial') {
+			form.totalTransactionAmount = form.transactionAmount;
+		}
+		
 		setForm({ ...form });
+	};
+	
+	const handleSetToday = (fieldName) => {
+		const today = new Date().toISOString().split("T")[0]; // Get today's date in YYYY-MM-DD format
+		setForm({ ...form, [fieldName]: today });
 	};
 	
 	const handleSubmit = async (e) => {
@@ -191,8 +205,9 @@ const Payables = (props) => {
 				if (!account) return false;
 				
 				const billingCycle = getBillingCycle(transaction, account);
-				const dueDate = getDueDate(billingCycle, account).date;
+				const dueDate = getDueDate(billingCycle, account, transaction.altDueDate).date;
 				const month = `${dueDate.getFullYear()}-${String(dueDate.getMonth() + 1).padStart(2, '0')}`;
+				
 				return month === filterValue;
 			}).map(transaction => {
 				const account = accounts.find(acc => acc._id === transaction.transactionAccountId);
@@ -208,7 +223,13 @@ const Payables = (props) => {
 		// Merge loan transactions with the existing filtered transactions
 		filteredTransactions = filteredTransactions.concat(loanTransactions);
 		
-		return filteredTransactions.sort((a, b) => new Date(a.dueDate) - new Date(b.dueDate));
+		return filteredTransactions.map(transaction => ({
+			...transaction,
+			dueDate: transaction.altDueDate && new Date(transaction.altDueDate).toString() !== "Invalid Date"
+				? transaction.altDueDate
+				: transaction.dueDate
+		})).sort((a, b) => new Date(a.dueDate) - new Date(b.dueDate))
+		// return filteredTransactions.sort((a, b) => new Date(a.dueDate) - new Date(b.dueDate));
 	};
 	
 	const handleFilterChange = (type, value) => {
@@ -217,7 +238,7 @@ const Payables = (props) => {
 	};
 	
 	const totalPaid = filterTransactions().reduce((total, transaction) => total + (transaction.paid ? transaction.transactionAmount : 0), 0);
-	const totalDue = filterTransactions().reduce((total, transaction) => total + transaction.transactionAmount, 0);
+	const totalDue = filterTransactions().filter(transaction => transaction.transactionTypeId != 'credit_card_partial').reduce((total, transaction) => total + transaction.transactionAmount, 0);
 	const filteredTransactions = filterTransactions();
 	const progress = totalDue ? (totalPaid / totalDue) * 100 : 0;
 	
@@ -262,7 +283,9 @@ const Payables = (props) => {
 	const renderGroupedTransactions = (groupedTransactions, isBorderClass) => {
 		return Object.entries(groupedTransactions).map(([range, transactions]) => {
 			const totalPaid = transactions.reduce((total, transaction) => total + (transaction.paid ? transaction.transactionAmount : 0), 0);
-			const totalDue = transactions.reduce((total, transaction) => total + transaction.transactionAmount, 0);
+			const totalDue = transactions.filter(transaction => transaction.transactionTypeId != 'credit_card_partial').reduce((total, transaction) => total + transaction.transactionAmount, 0);
+			
+			const totalPartialPaid = transactions.filter(transaction => transaction.transactionTypeId == 'credit_card_partial').reduce((total, transaction) => total + transaction.transactionAmount, 0);
 			const progress = totalDue ? (totalPaid / totalDue) * 100 : 0;
 			const borderClass = isBorderClass(range) ? 'border-warning' : '';
 			
@@ -271,52 +294,70 @@ const Payables = (props) => {
 			
 			return (
 				<div key={range} className={`card mb-4 ${borderClass}`}>
+					<div>
+						<div className="font-weight-bold text-center p-2"  style={{ background: "lightgrey"}}>
+							{range}
+						</div>
+					</div>
 					<div className="card-header">
+						
 						<div className="row">
-							<div className="col-6 d-flex align-items-center">
-								<div style={{ width: 40, height: 40, marginRight: "10px" }}>
-									<CircularProgressbarWithChildren
-										value={progress}
-										text={`${Math.round(progress)}%`}
-										styles={buildStyles({
-											textSize: '25px',
-											pathColor: progressColor,
-											textColor: progressColor,
-											trailColor: '#d6d6d6',
-											backgroundColor: '#f8f9fa',
-											strokeLinecap: 'round'
-										})}
-									/>
-								</div>
-								<div className="font-weight-bold">
-									{range}
-								</div>
-							</div>
-							<div className="col text-right text-primary">{formatMoneyIntl(totalPaid)}</div>
-							<div className="col text-right text-danger">
+							<div className="col text-right text-danger ">
 								{formatMoneyIntl(totalDue)}
 								<div style={{ fontSize: '0.75em', color: '#6c757d' }}>
-									{formatMoneyIntl(totalDue - totalPaid)}
+									total due
+								</div>
+							</div>
+							
+							<div className="col text-right text-primary ">
+								{formatMoneyIntl(totalPaid)}
+								<div style={{ fontSize: '0.75em', color: '#6c757d' }}>
+									total paid
+								</div>
+							</div>
+							
+							<div className="col text-right text-success ">
+								{formatMoneyIntl(totalDue - totalPaid)}
+								<div style={{ fontSize: '0.75em', color: '#6c757d' }}>
+									remaining
+								</div>
+							</div>
+							
+							<div className="col text-right text-pastel-orange border-left border-dark pl-3">
+								{formatMoneyIntl(totalPartialPaid)}
+								<div style={{ fontSize: '0.75em', color: '#6c757d' }}>
+									partially paid
+								</div>
+							</div>
+							
+							<div className="col text-right" style={{ color: "purple"}}>
+								{formatMoneyIntl(totalDue - totalPartialPaid)}
+								<div style={{ fontSize: '0.75em', color: '#6c757d' }}>
+									partially remaining
 								</div>
 							</div>
 						</div>
 					</div>
 					<div className="card-body">
 						<ListGroup variant="flush">
-							{transactions.sort((a, b) => new Date(a.dueDate) - new Date(b.dueDate)).map(transaction => {
-								const account = accounts.find(acc => acc._id === transaction.transactionAccountId);
-								return (
-									<PayableTransactionItem
-										key={transaction._id}
-										transaction={transaction}
-										account={account}
-										startEditTransaction={startEditTransaction}
-										deleteTransaction={deleteTransaction}
-										openPayModal={openPayModal}
-									/>
-								);
-							})}
+							{transactions
+								.filter(transaction => transaction.dueDate) // Ensure all transactions have a valid dueDate
+								.sort((a, b) => new Date(a.dueDate) - new Date(b.dueDate)) // Sort after setting dueDate
+								.map(transaction => {
+									const account = accounts.find(acc => acc._id === transaction.transactionAccountId);
+									return (
+										<PayableTransactionItem
+											key={transaction._id}
+											transaction={transaction}
+											account={account}
+											startEditTransaction={startEditTransaction}
+											deleteTransaction={deleteTransaction}
+											openPayModal={openPayModal}
+										/>
+									);
+								})}
 						</ListGroup>
+					
 					</div>
 				</div>
 			);
@@ -456,21 +497,24 @@ const Payables = (props) => {
 			{/* Notes, Credit Card / Loans, and Transactions Layout */}
 			<Row>
 				{/* Left Side - Notes Panel */}
-				<Col md={3}>
-					<NotesPanel taskType="payable" placeholder="Write payable notes here..." />
-					<NotesPanel taskType="payable-due-1" placeholder="Write payable notes here..." taskName="Week 1"/>
-					<NotesPanel taskType="payable-due-2" placeholder="Write payable notes here..." taskName="Week 2"/>
-					<NotesPanel taskType="payable-due-3" placeholder="Write payable notes here..." taskName="Week 3"/>
-					<NotesPanel taskType="payable-due-4" placeholder="Write payable notes here..." taskName="Week 4"/>
-				</Col>
+			
 				
 				{/* Middle - Credit Card & Loan Accounts */}
-				<Col md={3}>
+				<Col md={4}>
 					{renderCreditCardAndLoanAccounts()}
 				</Col>
 				
+				{/*<Col md={4}>*/}
+				{/*	/!*<PayableTaskPanel/>*!/*/}
+				{/*	/!*<NotesPanel taskType="payable" placeholder="Write payable notes here..." />*!/*/}
+				{/*	/!*<NotesPanel taskType="payable-due-1" placeholder="Write payable notes here..." taskName="Week 1"/>*!/*/}
+				{/*	/!*<NotesPanel taskType="payable-due-2" placeholder="Write payable notes here..." taskName="Week 2"/>*!/*/}
+				{/*	/!*<NotesPanel taskType="payable-due-3" placeholder="Write payable notes here..." taskName="Week 3"/>*!/*/}
+				{/*	/!*<NotesPanel taskType="payable-due-4" placeholder="Write payable notes here..." taskName="Week 4"/>*!/*/}
+				{/*</Col>*/}
+				
 				{/* Right Side - Transactions List */}
-				<Col md={6}>
+				<Col md={8}>
 					<ListGroup variant="flush">
 						{filteredTransactions.length === 0 ? (
 							<ListGroup.Item>
@@ -494,6 +538,8 @@ const Payables = (props) => {
 				handleInputChange={handleInputChange}
 				filteredFields={filteredFields}
 				isEditing={isEditing}
+				modalType="payables"
+				handleSetToday={handleSetToday}
 			/>
 		</div>
 	

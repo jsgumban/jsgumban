@@ -193,7 +193,13 @@ export const getBillingCycle = (transaction, account) => {
 };
 
 // Function to get the due date based on the billing cycle end date and account bill due date
-export const getDueDate = (billingCycle, account) => {
+export const getDueDate = (billingCycle, account, altDueDate = null) => {
+	if (altDueDate) {
+		const altDate = stripTime(new Date(altDueDate));
+		const remainingDays = Math.ceil((altDate - stripTime(new Date())) / (1000 * 60 * 60 * 24));
+		return { date: altDate, remainingDays };
+	}
+	
 	const billingCycleEndDate = stripTime(new Date(billingCycle.end));
 	const billDueDate = account?.billDueDate;
 	
@@ -210,10 +216,11 @@ export const getDueDate = (billingCycle, account) => {
 	return { date: dueDate, remainingDays };
 };
 
+
 export const getWeekDateRange = (date) => {
 	const currentDate = new Date(date);
 	const firstDayOfWeek = new Date(
-		currentDate.setDate(currentDate.getDate() - currentDate.getDay() + 1)
+		currentDate.setDate(currentDate.getDate() - currentDate.getDay())
 	);
 	const lastDayOfWeek = new Date(firstDayOfWeek);
 	lastDayOfWeek.setDate(lastDayOfWeek.getDate() + 6);

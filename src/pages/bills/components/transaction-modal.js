@@ -10,6 +10,7 @@ const TransactionModal = ({
   filteredFields,
   isEditing,
   modalType,
+  handleSetToday,
   accountType // Destructure the accountType prop
 }) => {
 	// Function to filter options based on typeId
@@ -20,6 +21,14 @@ const TransactionModal = ({
 			}
 			return options.filter(option => option.id === 'financing_in' || option.id === 'financing_out' || option.id === 'financing_partial');
 		}
+		
+		if (modalType === 'payables') {
+			if (name === 'transactionAccountId') {
+				return options.filter(option => option.typeId === 'credit_card');
+			}
+			return options.filter(option => option.id === 'credit_card_in' || option.id === 'credit_card_out' || option.id === 'credit_card_partial');
+		}
+		
 		return options;
 	};
 	
@@ -89,7 +98,25 @@ const TransactionModal = ({
 						
 						return (
 							<Form.Group key={field.name} className="mb-3">
-								<Form.Label htmlFor={field.name}>{field.placeholder}</Form.Label>
+								{ field.reactType !== 'checkbox' &&
+								<Form.Label htmlFor={field.name}>
+									{field.placeholder}
+									{/* Show 'Today' only when the field is a date input */}
+									{field.reactType === "date" && (
+										<span
+											// className="text-right"
+											onClick={() => handleSetToday(field.name)}
+											style={{
+												cursor: "pointer",
+												color: "grey",
+												fontSize: "0.9em",
+											}}
+										>
+											&nbsp;(Today)
+										</span>
+									)}
+								</Form.Label>}
+								
 								{field.reactType === 'select' ? (
 									<Form.Control
 										as="select"
@@ -103,21 +130,36 @@ const TransactionModal = ({
 											<option key={option.id} value={option.id}>{option.name}</option>
 										))}
 									</Form.Control>
-								) : (
-									<Form.Control
-										type={field.reactType}
+								) : field.reactType === 'checkbox' ? (
+									<Form.Check
+										type="checkbox"
 										id={field.name}
 										name={field.name}
-										value={field.reactType === 'date' && form[field.name] ? form[field.name].split('T')[0] : form[field.name]}
-										onChange={(e) => {
-											if (field.reactType === 'number') {
-												handleNonNegativeInput(e, field);
-											} else {
-												handleInputChange(e, field);
-											}
-										}}
-										placeholder={field.placeholder}
+										label={field.placeholder} // Label next to checkbox
+										checked={form[field.name] || false}
+										onChange={(e) => handleInputChange({ target: { name: field.name, value: e.target.checked } }, field)}
 									/>
+								) : (
+									<span>
+								    <Form.Control
+									    type={field.reactType}
+									    id={field.name}
+									    name={field.name}
+									    value={
+										    field.reactType === "date" && form[field.name]
+											    ? form[field.name].split("T")[0]
+											    : form[field.name]
+									    }
+									    onChange={(e) => {
+										    if (field.reactType === "number") {
+											    handleNonNegativeInput(e, field);
+										    } else {
+											    handleInputChange(e, field);
+										    }
+									    }}
+									    placeholder={field.placeholder}
+								    />
+								</span>
 								)}
 							</Form.Group>
 						);
