@@ -21,14 +21,14 @@ const TransactionModal = ({
 			}
 			return options.filter(option => option.id === 'financing_in' || option.id === 'financing_out' || option.id === 'financing_partial');
 		}
-		
+
 		if (modalType === 'payables') {
 			if (name === 'transactionAccountId') {
 				return options.filter(option => option.typeId === 'credit_card');
 			}
-			return options.filter(option => option.id === 'credit_card_in' || option.id === 'credit_card_out' || option.id === 'credit_card_partial');
+			return options.filter(option => option.id === 'bill_payment' || option.id === 'credit_card_out' || option.id === 'credit_card_partial');
 		}
-		
+
 		return options;
 	};
 	
