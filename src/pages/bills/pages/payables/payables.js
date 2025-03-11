@@ -400,7 +400,7 @@ const Payables = (props) => {
 		}).filter(Boolean)
 			.sort((a, b) => a.dueDate - b.dueDate);
 		
-		const highlightedAccounts = filteredTransactions.map(transaction => transaction.transactionAccountId);
+		const highlightedAccounts = filteredTransactions.filter(transaction => transaction.transactionTypeId != 'credit_card_partial').map(transaction => transaction.transactionAccountId);
 		
 		const getHighlightClass = (account) => {
 			if (highlightedAccounts.includes(account._id)) {
