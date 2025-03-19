@@ -15,22 +15,29 @@ const TransactionModal = ({
 }) => {
 	// Function to filter options based on typeId
 	const filterOptionsByType = (options, name) => {
+		const sortByName = (arr) => arr.sort((a, b) => a.name.localeCompare(b.name));
+		
 		if (modalType === 'financing') {
 			if (name === 'transactionAccountId') {
-				return options.filter(option => option.typeId === 'financing');
+				return sortByName(options.filter(option => option.typeId === 'financing'));
 			}
-			return options.filter(option => option.id === 'financing_in' || option.id === 'financing_out' || option.id === 'financing_partial');
+			return sortByName(options.filter(option =>
+				option.id === 'financing_in' || option.id === 'financing_out' || option.id === 'financing_partial'
+			));
 		}
-
+		
 		if (modalType === 'payables') {
 			if (name === 'transactionAccountId') {
-				return options.filter(option => option.typeId === 'credit_card');
+				return sortByName(options.filter(option => option.typeId === 'credit_card' || option.typeId === 'loan'));
 			}
-			return options.filter(option => option.id === 'bill_payment' || option.id === 'credit_card_out' || option.id === 'credit_card_partial');
+			return sortByName(options.filter(option =>
+				option.id === 'bill_payment' || option.id === 'credit_card_out' || option.id === 'credit_card_partial'
+			));
 		}
-
-		return options;
+		
+		return sortByName(options);
 	};
+	
 	
 	// Function to handle non-negative number inputs
 	const handleNonNegativeInput = (e, field) => {
@@ -78,7 +85,7 @@ const TransactionModal = ({
 	};
 	
 	useEffect(() => {
-		if (form.transactionTypeId === 'financing_out') {
+		if (form?.transactionTypeId === 'financing_out') {
 			calculateTotalTransactionAmount();
 		}
 	}, [form.transactionAmount, form.interestRate, form.serviceFee, form.installmentMonths, form.includePrincipalAmountInInstallment]);
