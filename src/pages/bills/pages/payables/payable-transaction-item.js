@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Row, Col, Button, ListGroup, Badge, OverlayTrigger, Tooltip } from 'react-bootstrap';
 import {getDayInfo, formatMoneyIntl, formatReadableDate, getBillingCycle, getDueDate} from "../../../../helpers/bills";
-import { FaCopy } from "react-icons/fa";
+import {FaCopy, FaRecycle} from "react-icons/fa";
 
 const PayableTransactionItem = ({ transaction, account, startEditTransaction, deleteTransaction, openPayModal }) => {
 	let billingCycle, dueDate;
@@ -22,7 +22,7 @@ const PayableTransactionItem = ({ transaction, account, startEditTransaction, de
 	} else {
 		// Handle credit card and other transactions
 		billingCycle = getBillingCycle(transaction, account);
-		dueDate = getDueDate(billingCycle, account);
+		dueDate = getDueDate(billingCycle, account, transaction.altDueDate);
 	}
 	
 	// Ensure dueDate has a valid fallback
@@ -44,9 +44,7 @@ const PayableTransactionItem = ({ transaction, account, startEditTransaction, de
 	const [copied, setCopied] = useState(false);
 	
 	const transactionText = account
-		? `${account.name} (${account?.accountNumber?.slice(-4) || "Loan"}) - ${formatMoneyIntl(
-			transaction.transactionAmount
-		)}`
+		? `${account.name} (${account?.accountNumber?.slice(-4) || "Loan"})`
 		: "N/A";
 	
 	const handleCopy = () => {
@@ -56,7 +54,7 @@ const PayableTransactionItem = ({ transaction, account, startEditTransaction, de
 	};
 	
 	return (
-		<ListGroup.Item key={transaction._id}>
+		<ListGroup.Item key={transaction._id} style={{ background: transaction.transactionTypeId == 'credit_card_partial' ? "lavender": null}}>
 			<Row>
 				<Col xs={2} className="text-center my-auto">
 					<div className="d-flex align-items-center date-info">
@@ -78,7 +76,7 @@ const PayableTransactionItem = ({ transaction, account, startEditTransaction, de
 							cursor: "pointer",
 						}}
 					>
-						<div style={{ fontWeight: "bold", textAlign: "left"}}>{transactionText}</div>
+						<div style={{ fontWeight: "bold", textAlign: "left"}}>{transactionText} {transaction.rollable && <FaRecycle color="green"/>}</div>
 						{/*<FaCopy size={12} color={copied ? "green" : "gray"} />*/}
 					</button>
 					
@@ -89,19 +87,20 @@ const PayableTransactionItem = ({ transaction, account, startEditTransaction, de
 					{/*</div>*/}
 					{/*<div><strong>Transaction Date:</strong> {formatReadableDate(transaction.transactionDate)}</div>*/}
 					{/*<div><strong>Billing Cycle:</strong> {billingCycle.start.toLocaleDateString()} - {billingCycle.end.toLocaleDateString()}</div>*/}
-					{transaction.transactionNote && <div><strong>Note:</strong> {transaction.transactionNote}</div>}
 					{account?.typeId === 'loan' && transaction.loanProgress && (
 						<div><strong>Progress:</strong> {transaction.loanProgress}</div>
 					)}
+					
 					<div>
 						<strong>Status:</strong>
 						<Badge variant={badgeVariant} className="ml-2">
 							{transaction.paid ? 'Paid' : `${remainingDays} days`}
 						</Badge>
 					</div>
+					{transaction.transactionNote && <div><strong>Note:</strong> {transaction.transactionNote}</div>}
 				</Col>
 				<Col xs={3} className="text-right">
-					{/*<div className="text-danger mb-2">{formatMoneyIntl(transaction.transactionAmount)}</div>*/}
+					<div className="text-danger mb-2">{formatMoneyIntl(transaction.transactionAmount)}</div>
 					{!transaction.paid && (
 						<div className="d-flex justify-content-between align-items-center">
 							<Button variant="outline-primary" size="sm" className="mr-2" onClick={() => startEditTransaction(transaction)}>Edit</Button>

@@ -10,18 +10,34 @@ const TransactionModal = ({
   filteredFields,
   isEditing,
   modalType,
+  handleSetToday,
   accountType // Destructure the accountType prop
 }) => {
 	// Function to filter options based on typeId
 	const filterOptionsByType = (options, name) => {
+		const sortByName = (arr) => arr.sort((a, b) => a.name.localeCompare(b.name));
+		
 		if (modalType === 'financing') {
 			if (name === 'transactionAccountId') {
-				return options.filter(option => option.typeId === 'financing');
+				return sortByName(options.filter(option => option.typeId === 'financing'));
 			}
-			return options.filter(option => option.id === 'financing_in' || option.id === 'financing_out' || option.id === 'financing_partial');
+			return sortByName(options.filter(option =>
+				option.id === 'financing_in' || option.id === 'financing_out' || option.id === 'financing_partial'
+			));
 		}
-		return options;
+		
+		if (modalType === 'payables') {
+			if (name === 'transactionAccountId') {
+				return sortByName(options.filter(option => option.typeId === 'credit_card' || option.typeId === 'loan'));
+			}
+			return sortByName(options.filter(option =>
+				option.id === 'bill_payment' || option.id === 'credit_card_out' || option.id === 'credit_card_partial'
+			));
+		}
+		
+		return sortByName(options);
 	};
+	
 	
 	// Function to handle non-negative number inputs
 	const handleNonNegativeInput = (e, field) => {
@@ -69,7 +85,7 @@ const TransactionModal = ({
 	};
 	
 	useEffect(() => {
-		if (form.transactionTypeId === 'financing_out') {
+		if (form?.transactionTypeId === 'financing_out') {
 			calculateTotalTransactionAmount();
 		}
 	}, [form.transactionAmount, form.interestRate, form.serviceFee, form.installmentMonths, form.includePrincipalAmountInInstallment]);
@@ -89,7 +105,25 @@ const TransactionModal = ({
 						
 						return (
 							<Form.Group key={field.name} className="mb-3">
-								<Form.Label htmlFor={field.name}>{field.placeholder}</Form.Label>
+								{ field.reactType !== 'checkbox' &&
+								<Form.Label htmlFor={field.name}>
+									{field.placeholder}
+									{/* Show 'Today' only when the field is a date input */}
+									{field.reactType === "date" && (
+										<span
+											// className="text-right"
+											onClick={() => handleSetToday(field.name)}
+											style={{
+												cursor: "pointer",
+												color: "grey",
+												fontSize: "0.9em",
+											}}
+										>
+											&nbsp;(Today)
+										</span>
+									)}
+								</Form.Label>}
+								
 								{field.reactType === 'select' ? (
 									<Form.Control
 										as="select"
@@ -103,21 +137,36 @@ const TransactionModal = ({
 											<option key={option.id} value={option.id}>{option.name}</option>
 										))}
 									</Form.Control>
-								) : (
-									<Form.Control
-										type={field.reactType}
+								) : field.reactType === 'checkbox' ? (
+									<Form.Check
+										type="checkbox"
 										id={field.name}
 										name={field.name}
-										value={field.reactType === 'date' && form[field.name] ? form[field.name].split('T')[0] : form[field.name]}
-										onChange={(e) => {
-											if (field.reactType === 'number') {
-												handleNonNegativeInput(e, field);
-											} else {
-												handleInputChange(e, field);
-											}
-										}}
-										placeholder={field.placeholder}
+										label={field.placeholder} // Label next to checkbox
+										checked={form[field.name] || false}
+										onChange={(e) => handleInputChange({ target: { name: field.name, value: e.target.checked } }, field)}
 									/>
+								) : (
+									<span>
+								    <Form.Control
+									    type={field.reactType}
+									    id={field.name}
+									    name={field.name}
+									    value={
+										    field.reactType === "date" && form[field.name]
+											    ? form[field.name].split("T")[0]
+											    : form[field.name]
+									    }
+									    onChange={(e) => {
+										    if (field.reactType === "number") {
+											    handleNonNegativeInput(e, field);
+										    } else {
+											    handleInputChange(e, field);
+										    }
+									    }}
+									    placeholder={field.placeholder}
+								    />
+								</span>
 								)}
 							</Form.Group>
 						);
