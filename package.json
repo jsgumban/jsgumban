@@ -19,6 +19,8 @@
     "axios": "^1.6.7",
     "bootstrap": "^4.4.1",
     "date-fns": "^3.3.1",
+    "echarts": "^5.6.0",
+    "echarts-for-react": "^3.0.3",
     "font-awesome": "^4.7.0",
     "imagesloaded": "^4.1.4",
     "install": "^0.13.0",
@@ -46,6 +48,7 @@
     "react-router-dom": "^5.1.2",
     "react-scripts": "^5.0.1",
     "react-slick": "^0.25.2",
+    "recharts": "^2.15.1",
     "sass": "^1.32.0",
     "slick-carousel": "^1.8.1",
     "socket.io-client": "^4.8.1"
