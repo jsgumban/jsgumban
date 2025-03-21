@@ -41,7 +41,6 @@ import FlashCard from "./pages/flash-card";
 import ScoutApp from "./pages/scout-app";
 import BillsApp from "./pages/bills";
 import WebscoketApp from "./pages/websocket";
-import Charts from "./pages/charts";
 
 const App = () => {
     return (
@@ -56,7 +55,6 @@ const App = () => {
                     <Route exact path={`${process.env.PUBLIC_URL + "/flash-card"}`} component={FlashCard}/>
     
     
-                    <Route path={`${process.env.PUBLIC_URL + "/charts"}`} component={Charts}/>
                     <Route path={`${process.env.PUBLIC_URL + "/scout"}`} component={ScoutApp}/>
                     <Route path={`${process.env.PUBLIC_URL + "/bills"}`} component={BillsApp}/>
                     {/*<Route path={`${process.env.PUBLIC_URL + "/websocket"}`} component={WebscoketApp}/>*/}
