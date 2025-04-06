@@ -331,7 +331,7 @@ const Payables = (props) => {
 							</div>
 							
 							<div className="col text-right" style={{ color: "purple"}}>
-								{formatMoneyIntl(totalDue - totalPartialPaid)}
+								{formatMoneyIntl((totalDue - totalPaid) - totalPartialPaid)}
 								<div style={{ fontSize: '0.75em', color: '#6c757d' }}>
 									partially remaining
 								</div>
