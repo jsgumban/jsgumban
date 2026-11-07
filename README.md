@@ -2,6 +2,12 @@
 
 Senior full-stack developer, 10+ years building production web apps with **React, Next.js, TypeScript and Node.js**, and more recently **Python** tooling for audio/video processing and automation. I've worked with teams across the UK, Netherlands and Australia on healthcare, fintech and brand projects.
 
+> **A note on my contribution graph:** most of my professional work over the last decade lives in private repositories owned by the companies and clients I've worked for, so it isn't visible here. My public activity is mainly personal projects and open-source contributions, and doesn't reflect the full scope of my day-to-day engineering work. I'm happy to walk through past work in detail on request.
+
+### Open source
+
+- **[recharts](https://github.com/recharts/recharts)**: fixing the tooltip band cursor so `ComposedChart` with `<Bar>` highlights the hovered category like `BarChart` does ([PR #8183](https://github.com/recharts/recharts/pull/8183), fixes [#3645](https://github.com/recharts/recharts/issues/3645))
+
 ### What I'm building
 
 | Project | What it does | Stack |
