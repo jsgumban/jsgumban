@@ -8,6 +8,7 @@ Senior full-stack developer, 10+ years building production web apps with **React
 
 - **[recharts](https://github.com/recharts/recharts)**: fixing the tooltip band cursor so `ComposedChart` with `<Bar>` highlights the hovered category like `BarChart` does ([PR #8183](https://github.com/recharts/recharts/pull/8183), fixes [#3645](https://github.com/recharts/recharts/issues/3645))
 - **[recharts](https://github.com/recharts/recharts)**: regression tests that pin down two long-open bugs already fixed in 3.x: active dots clipped under `allowDataOverflow`, and single-datum stacked bars ([PR #8185](https://github.com/recharts/recharts/pull/8185), closes [#2608](https://github.com/recharts/recharts/issues/2608), [#2136](https://github.com/recharts/recharts/issues/2136))
+- **[xyflow / React Flow](https://github.com/xyflow/xyflow)**: fixing smooth step edges so `borderRadius` stays constant instead of shrinking when nodes are close together ([PR #6123](https://github.com/xyflow/xyflow/pull/6123), fixes [#4751](https://github.com/xyflow/xyflow/issues/4751))
 
 ### What I'm building
 
