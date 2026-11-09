@@ -11,6 +11,7 @@ Senior full-stack developer, 10+ years building production web apps with **React
 - **[xyflow / React Flow](https://github.com/xyflow/xyflow)**: fixing smooth step edges so `borderRadius` stays constant instead of shrinking when nodes are close together ([PR #6123](https://github.com/xyflow/xyflow/pull/6123), fixes [#4751](https://github.com/xyflow/xyflow/issues/4751))
 - **[dnd-kit](https://github.com/clauderic/dnd-kit)**: fixing dragged items being offset by their own CSS margins, with a Playwright regression test ([PR #2177](https://github.com/clauderic/dnd-kit/pull/2177), fixes [#2092](https://github.com/clauderic/dnd-kit/issues/2092))
 - **[dnd-kit](https://github.com/clauderic/dnd-kit)**: fixing `dragmove` events reporting the position from before the move, which made keyboard dragging lag one step behind ([PR #2180](https://github.com/clauderic/dnd-kit/pull/2180), fixes [#1991](https://github.com/clauderic/dnd-kit/issues/1991))
+- **[dnd-kit](https://github.com/clauderic/dnd-kit)**: fixing sortable animations overshooting inside a scaled parent (e.g. a zoomable canvas), with a Playwright regression test ([PR #2184](https://github.com/clauderic/dnd-kit/pull/2184), fixes [#2041](https://github.com/clauderic/dnd-kit/issues/2041))
 
 ### What I'm building
 
